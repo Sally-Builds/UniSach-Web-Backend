@@ -1,8 +1,11 @@
 import express, {Application} from 'express';
+import { connect, ConnectOptions } from 'mongoose'
 import cors from 'cors';
 import compression from 'compression';
 import morgan from 'morgan';
 import helmet from 'helmet';
+import UserAPI from './resources/api/users';
+import errorMiddleware from './middleware/error.middleware';
 
 
 
@@ -13,8 +16,10 @@ class App {
     constructor(port: number) {
         this.PORT = port;
         this.app = express()
+        this.initializeDB()
         this.initializeMiddleware()
         this.initializeRoutes()
+        this.app.use(errorMiddleware)
     }
 
     //middlewares
@@ -29,12 +34,24 @@ class App {
 
     //routes
     private initializeRoutes () {
-        this.app.get('/', (req, res, next) => {
-            res.send('hello world')
-        })
+        this.app.use('/api/users', new UserAPI(this.app).router)
     }
 
     //db connection
+    private initializeDB () {
+        type ConnectionOptionsExtend = {
+          useNewUrlParser: boolean
+          useUnifiedTopology: boolean
+        }
+        const connectionOptions:ConnectOptions & ConnectionOptionsExtend = {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+        }
+        let url = `${process.env.DATABASE}`
+        connect(url, connectionOptions).then(() => {
+          console.log('Database Connected Successfully')
+        })
+      }
 
     //spin up server
     public start() {
