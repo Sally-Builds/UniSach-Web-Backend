@@ -8,10 +8,11 @@ export default class UserAPI {
     private userService = new SignupBootstrap()
 
     constructor(private readonly app: Application) {
-        this.router.post('/', this.create)
+        this.router.post('/signup', this.register)
+        this.router.post('/signin/google', this.googleRegister)
     }
 
-    private create  = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    private register  = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const data = await this.userService.signup(req.body as User)
 
@@ -22,4 +23,17 @@ export default class UserAPI {
             next(new Exception(error.message, error.statusCode))
         }
     }
+
+    private googleRegister  = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+        try {
+            const data = await this.userService.googleAuth(req.body.token as string, req.body.role)
+
+            res.status(201).json({
+                data: data
+            })
+        } catch (error:any) {
+            next(new Exception(error.message, error.statusCode))
+        }
+    }
+
 }
