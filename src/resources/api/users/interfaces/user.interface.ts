@@ -1,11 +1,15 @@
 export default interface User {
-    first_name: string,
-    last_name: string,
+    first_name?: string,
+    last_name?: string,
+    name: string,
+    googleID?: string,
     phone?: string,
     email: string,
     active?: boolean,
-    confirmationStatus?: boolean
-    password: string,
+    confirmationCodeExpiresIn?:  number,
+    verificationCode?: string,
+    emailVerificationStatus?: String
+    password?: string,
     role: string,
 }
 

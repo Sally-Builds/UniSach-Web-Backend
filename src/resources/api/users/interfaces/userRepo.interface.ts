@@ -10,9 +10,9 @@ export default interface UserRepositoryInterface {
 
 export namespace createUser {
     export type Request = Omit<User, 'id'>;
-    export type Response = User | Exception;
+    export type Response = User;
 }
 
 export namespace getUserByEmail {
-    export type Response = User | null | Exception;
+    export type Response = User | null;
 }

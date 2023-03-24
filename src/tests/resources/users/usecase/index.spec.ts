@@ -60,7 +60,7 @@ describe('Signup usecase', () => {
         expect(createUser).toHaveBeenCalled()
     })
 
-    it('createUser function should return approproraite result', async () => {
+    it('createUser function should return appropriate result', async () => {
         const createUser = jest.spyOn(UserRepository, 'createUser')
         const {first_name, last_name, password, role,email} = user()
         const res = await signup.execute(first_name, last_name, email, password, role);
@@ -76,5 +76,7 @@ describe('Signup usecase', () => {
         })
         )
     })
+
+    it('execute function should return newly created user', )
     
 })

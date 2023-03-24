@@ -1,12 +1,12 @@
 import path from "path";
-import dotenv from "dotenv";
+import 'dotenv/config';
 import 'module-alias/register';
+import validateEnv from "./utils/__helpers_/validateEnv";
 
-const envPath = path.resolve(__dirname, '..', 'config.env');
-dotenv.config({ path: envPath });
+validateEnv()
 
 
 import App from ".";
 
 
-new App(8000).start()
+new App(Number(process.env.PORT)).start()

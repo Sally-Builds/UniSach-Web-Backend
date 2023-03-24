@@ -5,11 +5,15 @@ import User, {Role} from "../interfaces/user.interface";
 const userSchema = new Schema<User> ({
     first_name: {
         type: String,
-        required: true,
     },
     last_name: {
         type: String,
-        required: true,
+    },
+    name: {
+        type: String,
+    },
+    googleID: {
+        type: String,
     },
     email: {
         type: String,
@@ -18,12 +22,28 @@ const userSchema = new Schema<User> ({
     },
     password: {
         type: String,
-        required: true,
     },
     role: {
         type: String,
         enum: [Role.Pharmacist, Role.User]
-    }
+    },
+    emailVerificationStatus: {
+        type: String,
+        default: ['pending', 'active'],
+    },
+    verificationCode: {
+        type: String
+    },
+    confirmationCodeExpiresIn: {
+        type: Number,
+    },
+    phone: {
+        type: String,
+    },
+    active: {
+        type: Boolean,
+        default: true,
+    },
 })
 
 export default model('User', userSchema)

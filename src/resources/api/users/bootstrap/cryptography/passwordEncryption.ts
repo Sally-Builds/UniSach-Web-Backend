@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs'
-import PasswordEncryption from '../interfaces/cryptography/passwordEncryption'
+import PasswordEncryption from '../../interfaces/cryptography/passwordEncryption'
 
 export class BcryptAdapter implements PasswordEncryption {
   constructor (private readonly salt: number) {}

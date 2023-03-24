@@ -1,6 +1,7 @@
 import pug from 'pug'
 import nodemailer, {TransportOptions} from 'nodemailer'
 import path = require('path')
+import EmailInterface from './email.interface'
 
 interface transport {
     host: string,
@@ -12,18 +13,18 @@ interface transport {
     }
 }
 
-class Email {
-    public to;
-    public from;
-    public name;
-  constructor(email:string, name: string) {
-    this.to = email;
-    this.name = name
-    // this.url = url;
-    this.from = process.env.EMAIL_USERNAME;
-  }
+class Email extends EmailInterface {
+    from: string;
+    public to: string
+    public name: string
+    constructor() {
+      super()
+      this.to = ''
+      this.name = ''
+      this.from = String(process.env.EMAIL_USERNAME)
+    }
 
-  async send(template:string, subject: string, otp:string = '', name: string) {
+   async send(template:string, subject: string, otp:string = '', name: string) {
     //1) render html based template
     const url = path.resolve(__dirname, '..', '..', '..', '..', `/public/views/${template}.pug`)
     const html = pug.renderFile(`${__dirname}/../../../../public/views/${template}.pug`, {
@@ -36,7 +37,7 @@ class Email {
       host: process.env.EMAIL_HOST,
       port: process.env.EMAIL_PORT,
       secure: true, // true for 465, false for other ports
-      service: 'yahoo',
+      service: 'gmail',
       logger: true,
       auth: {
         user: process.env.EMAIL_USERNAME, // generated ethereal user
@@ -67,10 +68,11 @@ class Email {
 //   }
 
   //email verification
-  async EmailVerification(url:string) {
-    console.log(url, process.env.EMAIL_HOST)
+  async EmailVerification(OTP:string, email: string, name: string) {
     console.log(this.to)
-    await this.send('emailVerification', 'Email verification', url, this.name);
+    this.to = email
+    this.name = name
+    await this.send('emailVerification', 'Email verification', OTP, this.name);
   }
 
   //Reset password Email
