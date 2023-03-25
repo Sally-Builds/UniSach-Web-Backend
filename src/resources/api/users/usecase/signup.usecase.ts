@@ -1,5 +1,5 @@
 import Exception from "@/utils/exception/Exception";
-import SignupInterface, { OtpArtifacts, Signup } from "../interfaces/usecases/signup.usecase";
+import SignupInterface, { OtpArtifacts, Signup } from "../interfaces/usecases/signup.interface";
 import UserRepository from "../repository";
 import { Role } from "../interfaces/user.interface";
 import PasswordEncryption from "../interfaces/cryptography/passwordEncryption";
@@ -54,13 +54,14 @@ export default class SignupUsecase implements SignupInterface {
 
     otpGenerator(): OtpArtifacts.Response {
         const OTP = randomstring.generate({
-            length: 4,
-            charset: 'numeric',
+            length: 6,
+            charset: 'alphanumeric',
+            capitalization: "uppercase"
           });
         
           const OTPHash = crypto.createHash('sha256').update(OTP).digest('hex');
         
-          const expiresIn = Date.now() + 2 * 60 * 1000;
+          const expiresIn = Date.now() + 2 * 60 * 5000;
 
           return {OTP, OTPHash, expiresIn}
     }

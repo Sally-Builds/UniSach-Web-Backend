@@ -1,5 +1,5 @@
 import Exception from "@/utils/exception/Exception";
-import SignupWithGoogleInterface, {Signup} from "../interfaces/usecases/signup.google.usecase";
+import SignupWithGoogleInterface, {Signup} from "../interfaces/usecases/signup.google.interface";
 import UserRepository from "../repository";
 import { Role } from "../interfaces/user.interface";
 import { JwtGenerate } from "../interfaces/cryptography/jsonwebtoken/generate";

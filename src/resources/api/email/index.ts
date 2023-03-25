@@ -24,7 +24,7 @@ class Email extends EmailInterface {
       this.from = String(process.env.EMAIL_USERNAME)
     }
 
-   async send(template:string, subject: string, otp:string = '', name: string) {
+   async send(template:string, subject: string, otp:string, name: string) {
     //1) render html based template
     const url = path.resolve(__dirname, '..', '..', '..', '..', `/public/views/${template}.pug`)
     const html = pug.renderFile(`${__dirname}/../../../../public/views/${template}.pug`, {
@@ -70,6 +70,7 @@ class Email extends EmailInterface {
   //email verification
   async EmailVerification(OTP:string, email: string, name: string) {
     console.log(this.to)
+    console.log(OTP)
     this.to = email
     this.name = name
     await this.send('emailVerification', 'Email verification', OTP, this.name);

@@ -35,7 +35,7 @@ const userSchema = new Schema<User> ({
         type: String
     },
     confirmationCodeExpiresIn: {
-        type: Number,
+        type: Date,
     },
     phone: {
         type: String,
