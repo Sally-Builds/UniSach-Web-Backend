@@ -1,6 +1,9 @@
-import Exception from "@/utils/exception/Exception";
+import User from "../user.interface"
 
+export default interface VerifyOTPInterface {
+    execute(email: string, OTP: string): Promise<VerifyOTP.Response>
+}
 
-export default interface VerifyOTP {
-    execute(email: string, OTP: string): Promise<string>
+export namespace VerifyOTP {
+    export type Response = {user: User, token: string}
 }

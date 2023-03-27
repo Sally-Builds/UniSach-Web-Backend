@@ -1,14 +1,16 @@
 import Exception from "@/utils/exception/Exception";
-import VerifyOTP from "../interfaces/usecases/verifyOTP.interface";
+import VerifyOTPInterface, {VerifyOTP} from "../interfaces/usecases/verifyOTP.interface";
 import crypto from 'crypto'
-import UserRepository from "../repository";
+import UserRepositoryInterface from "../interfaces/userRepo.interface";
+import EmailInterface from "../../email/email.interface";
+import { JwtGenerate } from "../interfaces/cryptography/jsonwebtoken/generate";
 
 
-export default class VerifyOTPUsecase implements VerifyOTP {
+export default class VerifyOTPUsecase implements VerifyOTPInterface {
 
-    constructor(private readonly UserRepository: UserRepository){}
+    constructor(private readonly UserRepository: UserRepositoryInterface, private jwtGen: JwtGenerate, private readonly Email: EmailInterface){}
 
-    async execute(email: string, OTP: string): Promise<string> {
+    async execute(email: string, OTP: string): Promise<VerifyOTP.Response> {
         try {
             const hashedToken = crypto.createHash('sha256').update(OTP).digest('hex')
 
@@ -18,7 +20,17 @@ export default class VerifyOTPUsecase implements VerifyOTP {
 
             await this.UserRepository.findOneAndUpdate({email: user.email}, {emailVerificationStatus: 'active'})
 
-            return "successful"
+            user.password = undefined;
+            user.verificationCode = undefined
+            user.confirmationCodeExpiresIn = undefined
+            user.emailVerificationStatus = 'active'
+
+            const token = await this.jwtGen.sign((user as any).id)
+            let res = {user, token}
+
+            await this.Email.sendWelcome('http://localhost:3000/login', user.email, (user as any).first_name)
+
+            return res
         } catch (error:any) {
             throw new Exception(error.message, error.statuscode)
         }
