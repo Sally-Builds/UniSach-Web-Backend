@@ -8,8 +8,12 @@ export default class UserAPI {
     private userService = new SignupBootstrap()
 
     constructor(private readonly app: Application) {
-        this.router.post('/signup', this.register)
-        this.router.post('/signin/google', this.googleRegister)
+        this.router.post('/auth/signup', this.register)
+        this.router.post('/auth/signin/google', this.googleRegister)
+        this.router.post('/auth/verifyotp', this.verifyOTP)
+        this.router.get('/auth/resendotp', this.resendOTP)
+        this.router.post('/auth/forgotpassword', this.forgotPassword)
+        this.router.post('/auth/passwordreset/:token', this.passwordReset)
     }
 
     private register  = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
@@ -30,6 +34,54 @@ export default class UserAPI {
 
             res.status(201).json({
                 data: data
+            })
+        } catch (error:any) {
+            next(new Exception(error.message, error.statusCode))
+        }
+    }
+
+    private verifyOTP = async (req:Request, res: Response, next: NextFunction) => {
+        try {
+            const data = await this.userService.verifyOTP(req.body.email, req.body.otp)
+
+            res.status(200).json({
+                data: data
+            })
+        } catch (error:any) {
+            next(new Exception(error.message, error.statusCode))
+        }
+    }
+
+    private resendOTP = async (req:Request, res: Response, next: NextFunction) => {
+        try {
+            const message = await this.userService.resendOTP(req.body.email)
+
+            res.status(200).json({
+                data: message
+            })
+        } catch (error:any) {
+            next(new Exception(error.message, error.statusCode))
+        }
+    }
+
+    private forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const message = await this.userService.forgotPassword(req.body.email)
+
+            res.status(200).json({
+                data: message
+            })
+        } catch (error:any) {
+            next(new Exception(error.message, error.statusCode))
+        }
+    }
+
+    private passwordReset = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const message = await this.userService.passwordReset(req.params.token, req.body.password)
+
+            res.status(200).json({
+                data: message
             })
         } catch (error:any) {
             next(new Exception(error.message, error.statusCode))

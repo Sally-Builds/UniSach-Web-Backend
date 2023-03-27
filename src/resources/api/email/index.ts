@@ -24,13 +24,14 @@ class Email extends EmailInterface {
       this.from = String(process.env.EMAIL_USERNAME)
     }
 
-   async send(template:string, subject: string, otp:string = '', name: string) {
+   async send(template:string, subject: string, otp:string, name: string, email: string) {
     //1) render html based template
     const url = path.resolve(__dirname, '..', '..', '..', '..', `/public/views/${template}.pug`)
     const html = pug.renderFile(`${__dirname}/../../../../public/views/${template}.pug`, {
       subject,
       otp,
       name,
+      email
     });
 
     const transport = nodemailer.createTransport({
@@ -57,31 +58,38 @@ class Email extends EmailInterface {
     console.log('Preview URL: %s', nodemailer.getTestMessageUrl((info as any)));
   }
 
-  //Welcome email
-//   async sendWelcome(url:string) {
-//     await this.send(
-//       'welcome',
-//       'Welcome to Cura Healthcare Interoperabilty',
-//       url,
-//       this.name
-//     );
-//   }
+  // Welcome email
+  async sendWelcome(url:string, email: string, name: string) {
+    this.to = email;
+    this.name = name
+    await this.send(
+      'welcome',
+      'Welcome to Unisach Enterprise',
+      url,
+      this.name,
+      this.to
+    );
+  }
 
   //email verification
   async EmailVerification(OTP:string, email: string, name: string) {
-    console.log(this.to)
     this.to = email
     this.name = name
-    await this.send('emailVerification', 'Email verification', OTP, this.name);
+    await this.send('emailVerification', 'Email verification', OTP, this.name, '');
   }
 
   //Reset password Email
-//   async sendPasswordReset() {
-//     await this.send(
-//       'passwordReset',
-//       'Your password reset token. Valid for only 10 mins'
-//     );
-//   }
+  async sendPasswordReset(url: string, email: string, name: string) {
+    this.to = email
+    this.name = name
+    await this.send(
+      'passwordReset',
+      'Your password Reset. Valid for only 10 mins', 
+      url,
+      this.name,
+      ''
+    );
+  }
 };
 
 export default Email

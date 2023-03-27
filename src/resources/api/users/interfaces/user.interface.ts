@@ -10,6 +10,8 @@ export default interface User {
     verificationCode?: string,
     emailVerificationStatus?: String
     password?: string,
+    passwordResetToken?: string,
+    passwordResetTokenExpiresIn?: number,
     role: string,
 }
 
