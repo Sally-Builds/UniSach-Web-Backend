@@ -1,9 +1,8 @@
 import Exception from "@/utils/exception/Exception";
 import SignupInterface, { OtpArtifacts, Signup } from "../interfaces/usecases/signup.interface";
-import UserRepository from "../repository";
+import UserRepositoryInterface from "../interfaces/userRepo.interface";
 import { Role } from "../interfaces/user.interface";
 import PasswordEncryption from "../interfaces/cryptography/passwordEncryption";
-import User from "../interfaces/user.interface";
 import { JwtGenerate } from "../interfaces/cryptography/jsonwebtoken/generate";
 import randomstring from 'randomstring'
 import crypto from 'crypto'
@@ -11,7 +10,7 @@ import EmailInterface from "../../email/email.interface";
 
 export default class SignupUsecase implements SignupInterface {
 
-    constructor(private readonly userRepository: UserRepository, private EncryptPassword: PasswordEncryption, private jwtGen: JwtGenerate, private Email: EmailInterface) {}
+    constructor(private readonly userRepository: UserRepositoryInterface, private EncryptPassword: PasswordEncryption, private readonly Email: EmailInterface) {}
 
     public async execute(first_name: string, last_name: string, email: string, password: string, role: string): Promise<Signup.Response> {
         try {
@@ -44,8 +43,7 @@ export default class SignupUsecase implements SignupInterface {
             })
             
             this.Email.EmailVerification(OTP, email,  first_name)
-            // const token = await this.jwtGen.sign((user as any).id)
-            // let res = {user, token}
+
             return "Verify your email to get started."
        } catch (error:any) {
         throw new Exception(error.message, error.statusCode)

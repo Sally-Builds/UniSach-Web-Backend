@@ -1,12 +1,13 @@
 import Exception from "@/utils/exception/Exception";
 import SignupWithGoogleInterface, {Signup} from "../interfaces/usecases/signup.google.interface";
-import UserRepository from "../repository";
+import UserRepositoryInterface from "../interfaces/userRepo.interface";
 import { Role } from "../interfaces/user.interface";
 import { JwtGenerate } from "../interfaces/cryptography/jsonwebtoken/generate";
+import EmailInterface from "../../email/email.interface";
 
 export default class SignupWithGoogleUsecase implements SignupWithGoogleInterface {
 
-    constructor(private readonly userRepository: UserRepository, private jwtGen: JwtGenerate) {}
+    constructor(private readonly userRepository: UserRepositoryInterface, private readonly jwtGen: JwtGenerate, private readonly Email: EmailInterface) {}
 
     public async execute(first_name: string, last_name: string, email: string, googleID: string, role: string): Promise<Signup.Response> {
         try {
@@ -22,10 +23,13 @@ export default class SignupWithGoogleUsecase implements SignupWithGoogleInterfac
                     name: `${first_name} ${last_name}`,
                     last_name,
                     googleID,
-                    role
+                    role,
+                    emailVerificationStatus: 'active'
                 })
 
                 const token = await this.jwtGen.sign((user as any).id)
+
+                await this.Email.sendWelcome('http://localhost:3000/login', user.email, (user as any).first_name)
 
                 return {user, token}
             }

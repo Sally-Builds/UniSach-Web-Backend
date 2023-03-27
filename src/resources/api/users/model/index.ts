@@ -44,6 +44,12 @@ const userSchema = new Schema<User> ({
         type: Boolean,
         default: true,
     },
+    passwordResetToken: {
+        type: String
+    },
+    passwordResetTokenExpiresIn: {
+        type: Number
+    }
 })
 
 export default model('User', userSchema)
