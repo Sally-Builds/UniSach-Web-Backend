@@ -12,7 +12,9 @@ import VerifyOTPUsecase from "../usecase/verifyOTP.usecase";
 import ResendOTPUsecase from "../usecase/resendOTP.usecase";
 import ForgotPasswordUsecase from "../usecase/forgotPassword.usecase";
 import PasswordResetUsecase from "../usecase/passwordReset.usecase";
+import LoginUsecase from "../usecase/login.usecase";
 import { VerifyOTP } from "../interfaces/usecases/verifyOTP.interface";
+import { Login } from "../interfaces/usecases/login.interface";
 
 export default class UserBootstrap  {
     private SignupUsecase;
@@ -22,18 +24,21 @@ export default class UserBootstrap  {
     private ResendOTPUsecase;
     private ForgotPasswordUsecase;
     private PasswordResetUsecase;
+    private LoginUsecase
 
 
     constructor() {
         const userRepository = new UserRepository()
         const email = new Email()
         const jwtAdapter = new JwtAdapter('process.env.JWT_SECRET', '80d')
-        this.SignupUsecase = new SignupUsecase(new UserRepository(), new BcryptAdapter(12), email )
-        this.SignupWithGoogleUsecase = new SignupWithGoogleUsecase(new UserRepository(), jwtAdapter, email)
+        const bcryptAdapter = new BcryptAdapter(12)
+        this.SignupUsecase = new SignupUsecase(userRepository, bcryptAdapter, email )
+        this.SignupWithGoogleUsecase = new SignupWithGoogleUsecase(userRepository, jwtAdapter, email)
         this.VerifyOTPUsecase = new VerifyOTPUsecase(userRepository, jwtAdapter,email)
         this.ResendOTPUsecase = new ResendOTPUsecase(userRepository, email)
         this.ForgotPasswordUsecase = new ForgotPasswordUsecase(userRepository, email)
         this.PasswordResetUsecase = new PasswordResetUsecase(userRepository)
+        this.LoginUsecase = new LoginUsecase(userRepository, jwtAdapter, bcryptAdapter, this.ResendOTPUsecase)
         this.GoogleAdapter = GoogleAdapter
     }
 
@@ -53,6 +58,16 @@ export default class UserBootstrap  {
         if(!ticket) throw new Exception("there was an error signing in.", 400)
         const user = await this.SignupWithGoogleUsecase.execute((ticket.given_name as string), (ticket.family_name as string) , (ticket.email as string), ticket.sub, role)
         return user
+        } catch (error:any) {
+            throw new Exception(error.message, error.statusCode)
+        }
+    }
+
+    public login = async (email: string, password: string): Promise<Login.Response> => {
+        try {
+            const data = await this.LoginUsecase.execute(email, password);
+
+            return data;
         } catch (error:any) {
             throw new Exception(error.message, error.statusCode)
         }

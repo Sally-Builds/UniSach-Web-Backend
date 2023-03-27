@@ -3,7 +3,6 @@ import SignupInterface, { OtpArtifacts, Signup } from "../interfaces/usecases/si
 import UserRepositoryInterface from "../interfaces/userRepo.interface";
 import { Role } from "../interfaces/user.interface";
 import PasswordEncryption from "../interfaces/cryptography/passwordEncryption";
-import { JwtGenerate } from "../interfaces/cryptography/jsonwebtoken/generate";
 import randomstring from 'randomstring'
 import crypto from 'crypto'
 import EmailInterface from "../../email/email.interface";

@@ -9,6 +9,7 @@ export default class UserAPI {
 
     constructor(private readonly app: Application) {
         this.router.post('/auth/signup', this.register)
+        this.router.post('/auth/login', this.login)
         this.router.post('/auth/signin/google', this.googleRegister)
         this.router.post('/auth/verifyotp', this.verifyOTP)
         this.router.get('/auth/resendotp', this.resendOTP)
@@ -34,6 +35,18 @@ export default class UserAPI {
 
             res.status(201).json({
                 data: data
+            })
+        } catch (error:any) {
+            next(new Exception(error.message, error.statusCode))
+        }
+    }
+
+    private login = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+        try {
+            const data = await this.userService.login(req.body.email, req.body.password)
+
+            res.status(200).json({
+                data
             })
         } catch (error:any) {
             next(new Exception(error.message, error.statusCode))
