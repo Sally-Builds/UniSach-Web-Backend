@@ -16,7 +16,9 @@ function validateEnv (): void {
         EMAIL_PORT: num(),
         NODEMAILER_EMAIL_PASSWORD: str(),
         CLIENT_ID: str(),
-        CLIENT_SECRET: str()
+        CLIENT_SECRET: str(),
+        ACCESS_TOKEN_SECRET: str(),
+        REFRESH_TOKEN_SECRET: str()
     })
 }
 

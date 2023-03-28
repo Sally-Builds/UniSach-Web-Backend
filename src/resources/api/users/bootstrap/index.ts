@@ -2,8 +2,8 @@ import UserRepository from "../repository";
 import SignupUsecase from "../usecase/signup.usecase";
 import Exception from "@/utils/exception/Exception";
 import User from "../interfaces/user.interface";
-import { BcryptAdapter } from "./cryptography/passwordEncryption";
-import { JwtAdapter } from "./cryptography/jwtEncryption";
+import { BcryptAdapter } from "../../../../utils/cryptography/passwordEncryption";
+import { JwtAdapter } from "../../../../utils/cryptography/jwtEncryption";
 import GoogleAdapter from "./googleAdapter";
 import SignupWithGoogleUsecase  from '../usecase/signin.google.usecase'
 import {Signup} from "../interfaces/usecases/signup.google.interface";
@@ -30,7 +30,7 @@ export default class UserBootstrap  {
     constructor() {
         const userRepository = new UserRepository()
         const email = new Email()
-        const jwtAdapter = new JwtAdapter('process.env.JWT_SECRET', '80d')
+        const jwtAdapter = new JwtAdapter()
         const bcryptAdapter = new BcryptAdapter(12)
         this.SignupUsecase = new SignupUsecase(userRepository, bcryptAdapter, email )
         this.SignupWithGoogleUsecase = new SignupWithGoogleUsecase(userRepository, jwtAdapter, email)

@@ -7,9 +7,10 @@ export default interface SignupInterface {
 
 interface SignupResponse {
     user: User,
-    token: string
+    accessToken: string
+    refreshToken: string
 }
 
 export namespace Signup {
-    export type Response = SignupResponse | Exception
+    export type Response = SignupResponse
 }

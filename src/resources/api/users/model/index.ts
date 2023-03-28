@@ -49,7 +49,8 @@ const userSchema = new Schema<User> ({
     },
     passwordResetTokenExpiresIn: {
         type: Number
-    }
+    },
+    refreshToken: [String]
 })
 
 export default model('User', userSchema)

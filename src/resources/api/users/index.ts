@@ -32,9 +32,13 @@ export default class UserAPI {
     private googleRegister  = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const data = await this.userService.googleAuth(req.body.token as string, req.body.role)
+            res.cookie('refreshToken', data.refreshToken, {httpOnly: true, maxAge: 24 * 60 * 60 * 1000})
 
-            res.status(201).json({
-                data: data
+            res.status(200).json({
+                data: {
+                    accessToken: data.accessToken,
+                    user: data.user
+                }
             })
         } catch (error:any) {
             next(new Exception(error.message, error.statusCode))
@@ -44,6 +48,16 @@ export default class UserAPI {
     private login = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const data = await this.userService.login(req.body.email, req.body.password)
+
+            if((data as any).accessToken) {
+                res.cookie('refreshToken', (data as any).refreshToken, {httpOnly: true, maxAge: 24 * 60 * 60 * 1000})
+                return res.status(200).json({
+                    data: {
+                        accessToken: (data as any).accessToken,
+                        user: (data as any).user
+                    }
+                })
+            }
 
             res.status(200).json({
                 data
@@ -57,8 +71,13 @@ export default class UserAPI {
         try {
             const data = await this.userService.verifyOTP(req.body.email, req.body.otp)
 
+            res.cookie('refreshToken', data.refreshToken, {httpOnly: true, maxAge: 24 * 60 * 60 * 1000})
+
             res.status(200).json({
-                data: data
+                data: {
+                    accessToken: data.accessToken,
+                    user: data.user
+                }
             })
         } catch (error:any) {
             next(new Exception(error.message, error.statusCode))

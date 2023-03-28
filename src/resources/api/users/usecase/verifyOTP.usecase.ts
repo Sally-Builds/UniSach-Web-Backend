@@ -3,7 +3,7 @@ import VerifyOTPInterface, {VerifyOTP} from "../interfaces/usecases/verifyOTP.in
 import crypto from 'crypto'
 import UserRepositoryInterface from "../interfaces/userRepo.interface";
 import EmailInterface from "../../email/email.interface";
-import { JwtGenerate } from "../interfaces/cryptography/jsonwebtoken/generate";
+import { JwtGenerate } from "../../../../utils/cryptography/interface/cryptography/jsonwebtoken/generate";
 
 
 export default class VerifyOTPUsecase implements VerifyOTPInterface {
@@ -24,9 +24,11 @@ export default class VerifyOTPUsecase implements VerifyOTPInterface {
             user.verificationCode = undefined
             user.confirmationCodeExpiresIn = undefined
             user.emailVerificationStatus = 'active'
+            user.refreshToken = undefined
 
-            const token = await this.jwtGen.sign((user as any).id)
-            let res = {user, token}
+            const accessToken = await this.jwtGen.sign((user as any).id, String(process.env.ACCESS_TOKEN_SECRET), '30s')
+            const refreshToken = await this.jwtGen.sign((user as any).id, String(process.env.REFRESH_TOKEN_SECRET), '1d')
+            let res = {user, accessToken, refreshToken}
 
             await this.Email.sendWelcome('http://localhost:3000/login', user.email, (user as any).first_name)
 

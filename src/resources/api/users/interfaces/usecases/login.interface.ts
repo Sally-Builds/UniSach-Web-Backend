@@ -11,7 +11,8 @@ interface NotVerified {
 
 interface Verified {
     user: User,
-    token: String,
+    accessToken: string,
+    refreshToken: string
 }
 
 export namespace Login {

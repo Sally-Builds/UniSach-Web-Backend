@@ -5,5 +5,5 @@ export default interface VerifyOTPInterface {
 }
 
 export namespace VerifyOTP {
-    export type Response = {user: User, token: string}
+    export type Response = {user: User, accessToken: string, refreshToken: string}
 }

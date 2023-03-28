@@ -1,8 +1,8 @@
 import Exception from "@/utils/exception/Exception";
 import LoginInterface, {Login} from "../interfaces/usecases/login.interface";
 import UserRepositoryInterface from "../interfaces/userRepo.interface";
-import PasswordEncryption from "../interfaces/cryptography/passwordEncryption";
-import { JwtGenerate } from "../interfaces/cryptography/jsonwebtoken/generate";
+import PasswordEncryption from "../../../../utils/cryptography/interface/cryptography/passwordEncryption";
+import { JwtGenerate } from "../../../../utils/cryptography/interface/cryptography/jsonwebtoken/generate";
 import ResendOTP from "../interfaces/usecases/resendOTP.interface";
 
 export default class LoginUsecase implements LoginInterface {
@@ -18,7 +18,6 @@ export default class LoginUsecase implements LoginInterface {
             if(user.googleID) throw new Exception("Email or Password is incorrect", 400)
 
             const isCorrectPassword = await this.PasswordEncrypt.verify((user as any).password, password)
-            console.log(isCorrectPassword)
 
             if(!isCorrectPassword) throw new Exception("Email or Password is incorrect", 400);
 
@@ -30,16 +29,22 @@ export default class LoginUsecase implements LoginInterface {
                 }
             }
 
-            const token = await this.jwtGen.sign((user as any).id)
+            const accessToken = await this.jwtGen.sign((user as any).id, String(process.env.ACCESS_TOKEN_SECRET), '30s')
+            const refreshToken = await this.jwtGen.sign((user as any).id, String(process.env.REFRESH_TOKEN_SECRET), '1d')
+
+            await this.UserRepo.findOneAndUpdate({_id: (user as any).id}, {$push: { refreshToken: refreshToken}})
+            
             user.password = undefined;
             user.verificationCode = undefined
             user.confirmationCodeExpiresIn = undefined
             user.passwordResetTokenExpiresIn = undefined
             user.passwordResetToken = undefined
+            user.refreshToken = undefined
 
             return {
                 user: user,
-                token: token
+                accessToken,
+                refreshToken
             }
 
         } catch (error:any) {

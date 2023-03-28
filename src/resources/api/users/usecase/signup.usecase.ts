@@ -2,7 +2,7 @@ import Exception from "@/utils/exception/Exception";
 import SignupInterface, { OtpArtifacts, Signup } from "../interfaces/usecases/signup.interface";
 import UserRepositoryInterface from "../interfaces/userRepo.interface";
 import { Role } from "../interfaces/user.interface";
-import PasswordEncryption from "../interfaces/cryptography/passwordEncryption";
+import PasswordEncryption from "../../../../utils/cryptography/interface/cryptography/passwordEncryption";
 import randomstring from 'randomstring'
 import crypto from 'crypto'
 import EmailInterface from "../../email/email.interface";

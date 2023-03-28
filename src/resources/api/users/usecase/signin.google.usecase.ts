@@ -2,7 +2,7 @@ import Exception from "@/utils/exception/Exception";
 import SignupWithGoogleInterface, {Signup} from "../interfaces/usecases/signup.google.interface";
 import UserRepositoryInterface from "../interfaces/userRepo.interface";
 import { Role } from "../interfaces/user.interface";
-import { JwtGenerate } from "../interfaces/cryptography/jsonwebtoken/generate";
+import { JwtGenerate } from "../../../../utils/cryptography/interface/cryptography/jsonwebtoken/generate";
 import EmailInterface from "../../email/email.interface";
 
 export default class SignupWithGoogleUsecase implements SignupWithGoogleInterface {
@@ -27,17 +27,23 @@ export default class SignupWithGoogleUsecase implements SignupWithGoogleInterfac
                     emailVerificationStatus: 'active'
                 })
 
-                const token = await this.jwtGen.sign((user as any).id)
+                const accessToken = await this.jwtGen.sign((user as any).id, String(process.env.ACCESS_TOKEN_SECRET), '30s')
+                const refreshToken = await this.jwtGen.sign((user as any).id, String(process.env.REFRESH_TOKEN_SECRET), '1d')
 
+                await this.userRepository.findOneAndUpdate({_id: (user as any).id}, {$push: { refreshToken: refreshToken}})
                 await this.Email.sendWelcome('http://localhost:3000/login', user.email, (user as any).first_name)
 
-                return {user, token}
+                return {user, accessToken, refreshToken}
             }
 
 
             
-                const token = await this.jwtGen.sign((isExist as any).id)
-                return {user: isExist, token}
+            const accessToken = await this.jwtGen.sign((isExist as any).id, String(process.env.ACCESS_TOKEN_SECRET), '30s')
+            const refreshToken = await this.jwtGen.sign((isExist as any).id, String(process.env.REFRESH_TOKEN_SECRET), '1d')
+
+            await this.userRepository.findOneAndUpdate({_id: (isExist as any).id}, {$push: { refreshToken: refreshToken}})
+
+            return {user: isExist, accessToken, refreshToken}
        } catch (error:any) {
         throw new Exception(error.message, error.statusCode)
        }
