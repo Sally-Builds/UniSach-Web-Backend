@@ -2,6 +2,7 @@ import express, {Application} from 'express';
 import { connect, ConnectOptions } from 'mongoose'
 import cors from 'cors';
 import compression from 'compression';
+import cookieParser from 'cookie-parser'
 import morgan from 'morgan';
 import helmet from 'helmet';
 import UserAPI from './resources/api/users';
@@ -30,6 +31,7 @@ class App {
         this.app.use(helmet());
         this.app.use(express.json());
         this.app.use(express.urlencoded({extended: true}));
+        this.app.use(cookieParser())
     }
 
     //routes
