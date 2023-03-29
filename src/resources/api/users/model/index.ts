@@ -29,7 +29,8 @@ const userSchema = new Schema<User> ({
     },
     emailVerificationStatus: {
         type: String,
-        default: ['pending', 'active'],
+        enum: ['pending', 'active'],
+        default: 'pending',
     },
     verificationCode: {
         type: String

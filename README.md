@@ -276,6 +276,12 @@ Unisach backend development code
         ```
         POST - /api/users/auth/forgotpassword
         ```
+    * Request
+        ```json
+            {
+                "email": "uzoagulujoshua@gmail.com"
+            }
+        ```
     * Response 
          ```javascript
             status: 200
@@ -309,6 +315,12 @@ Unisach backend development code
     * Route
         ```
         POST - /api/users/auth/passwordreset/:resetToken
+        ```
+    * Request
+        ```json
+            {
+                "password": "test1234"
+            }
         ```
     * Response
          ```javascript
