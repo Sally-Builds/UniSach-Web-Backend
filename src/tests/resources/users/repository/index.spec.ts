@@ -1,6 +1,7 @@
 import { cleanData, connect, disconnect } from "../../../../utils/__helpers_/mongodb.memory.test.helpers";
 import UserRepository from "../../../../resources/api/users/repository";
 import User from "../../../../resources/api/users/interfaces/user.interface";
+import Exception from '../../../../utils/exception/Exception'
 
 
 const userRepository = new UserRepository() 
@@ -8,8 +9,10 @@ const user = ():User => {
     return {
             first_name: 'Jay',
             last_name: "Sally",
+            name: `Jay Sally`,
             email: "uzoagulujoshua@gmail.com",
-            password: 'wgke3mf',
+            phone: "+234123456789",
+            password: 'test1234',
             role: 'User'
     }
 }
@@ -27,7 +30,10 @@ describe('User Repository', () => {
             first_name: 'Jay',
             last_name: "Sally",
             email: "uzoagulujoshua@gmail.com",
-            password: 'wgke3mf',
+            name: `Jay Sally`,
+            phone: "+234123456789",
+            password: 'test1234',
+            emailVerificationStatus: 'pending',
             role: 'User',
             id: expect.anything()
         }))
@@ -44,4 +50,44 @@ describe('User Repository', () => {
             id: expect.anything()
         }))
     })
+
+    it('should return null', async () => {
+        const isExist = await userRepository.getUserByEmail('johndoe@gmail.com')
+
+        expect(isExist).toEqual(null)
+    })
+
+    it('should return correct query', async () => {
+        const userData:User = user();
+        await userRepository.createUser(userData)
+        const isExist = await userRepository.findOne({email: userData.email})
+
+        expect(isExist).toEqual(expect.objectContaining({
+            email: "uzoagulujoshua@gmail.com",
+            role: 'User',
+            emailVerificationStatus: 'pending',
+            id: expect.anything()
+        }))
+    })
+
+    it('should return null', async () => {
+        const isExist = await userRepository.findOne({email: "johndoe@gmail.com"})
+
+        expect(isExist).toEqual(null)
+    })
+
+    it('should return updated user', async () => {
+        const userData:User = user();
+        await userRepository.createUser(userData)
+        const isExist = await userRepository.findOneAndUpdate({email: userData.email}, {emailVerificationStatus: 'active'})
+
+        expect(isExist).toEqual(expect.objectContaining({
+            emailVerificationStatus: 'active'
+        }))
+    })
+
+    it('should throw an Exception', async () => {
+       await expect(async() => await userRepository.findOneAndUpdate({email: 'jay@gmail.com'}, {emailVerificationStatus: 'active'})).rejects.toThrow(new Exception("not found", 400))
+    })
+
 })
