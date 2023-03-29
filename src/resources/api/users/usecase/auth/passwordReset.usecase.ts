@@ -1,6 +1,6 @@
-import PasswordReset from "../interfaces/usecases/passwordReset.interface";
+import PasswordReset from "../../interfaces/usecases/auth/passwordReset.interface";
 import crypto from 'crypto'
-import UserRepositoryInterface from "../interfaces/userRepo.interface";
+import UserRepositoryInterface from "../../interfaces/userRepo.interface";
 import Exception from "@/utils/exception/Exception";
 
 export default class PasswordResetUsecase implements PasswordReset {

@@ -1,9 +1,9 @@
 import Exception from "@/utils/exception/Exception";
-import SignupWithGoogleInterface, {Signup} from "../interfaces/usecases/signup.google.interface";
-import UserRepositoryInterface from "../interfaces/userRepo.interface";
-import { Role } from "../interfaces/user.interface";
-import { JwtGenerate } from "../../../../utils/cryptography/interface/cryptography/jsonwebtoken/generate";
-import EmailInterface from "../../email/email.interface";
+import SignupWithGoogleInterface, {Signup} from "../../interfaces/usecases/auth/signup.google.interface";
+import UserRepositoryInterface from "../../interfaces/userRepo.interface";
+import { Role } from "../../interfaces/user.interface";
+import { JwtGenerate } from "../../../../../utils/cryptography/interface/cryptography/jsonwebtoken/generate";
+import EmailInterface from "../../../email/email.interface";
 
 export default class SignupWithGoogleUsecase implements SignupWithGoogleInterface {
 
@@ -33,7 +33,8 @@ export default class SignupWithGoogleUsecase implements SignupWithGoogleInterfac
                 await this.userRepository.findOneAndUpdate({_id: (user as any).id}, {$push: { refreshToken: refreshToken}})
                 await this.Email.sendWelcome('http://localhost:3000/login', user.email, (user as any).first_name)
 
-                return {user, accessToken, refreshToken}
+            user.refreshToken = undefined
+            return {user, accessToken, refreshToken}
             }
 
 
@@ -43,6 +44,7 @@ export default class SignupWithGoogleUsecase implements SignupWithGoogleInterfac
 
             await this.userRepository.findOneAndUpdate({_id: (isExist as any).id}, {$push: { refreshToken: refreshToken}})
 
+            isExist.refreshToken = undefined
             return {user: isExist, accessToken, refreshToken}
        } catch (error:any) {
         throw new Exception(error.message, error.statusCode)

@@ -1,15 +1,15 @@
 import Exception from "@/utils/exception/Exception";
-import LoginInterface, {Login} from "../interfaces/usecases/login.interface";
-import UserRepositoryInterface from "../interfaces/userRepo.interface";
-import PasswordEncryption from "../../../../utils/cryptography/interface/cryptography/passwordEncryption";
-import { JwtGenerate } from "../../../../utils/cryptography/interface/cryptography/jsonwebtoken/generate";
-import ResendOTP from "../interfaces/usecases/resendOTP.interface";
+import LoginInterface, {Login} from "../../interfaces/usecases/auth/login.interface";
+import UserRepositoryInterface from "../../interfaces/userRepo.interface";
+import PasswordEncryption from "../../../../../utils/cryptography/interface/cryptography/passwordEncryption";
+import { JwtGenerate } from "../../../../../utils/cryptography/interface/cryptography/jsonwebtoken/generate";
+import ResendOTP from "../../interfaces/usecases/auth/resendOTP.interface";
 
 export default class LoginUsecase implements LoginInterface {
 
     constructor(private readonly UserRepo: UserRepositoryInterface,  private readonly jwtGen: JwtGenerate,  private readonly PasswordEncrypt: PasswordEncryption, private readonly resentOTP: ResendOTP){}
 
-    public async execute(email: string, password: string): Promise<Login.Response> {
+    public async execute(email: string, password: string, refreshToken: string): Promise<Login.Response> {
         try {
             const user = await this.UserRepo.getUserByEmail(email);
 
@@ -29,10 +29,15 @@ export default class LoginUsecase implements LoginInterface {
                 }
             }
 
-            const accessToken = await this.jwtGen.sign((user as any).id, String(process.env.ACCESS_TOKEN_SECRET), '30s')
-            const refreshToken = await this.jwtGen.sign((user as any).id, String(process.env.REFRESH_TOKEN_SECRET), '1d')
 
-            await this.UserRepo.findOneAndUpdate({_id: (user as any).id}, {$push: { refreshToken: refreshToken}})
+           const newRefreshTokenArray = !refreshToken ? user.refreshToken : user.refreshToken?.filter((rt: string) => rt != refreshToken) 
+
+
+            const accessToken = await this.jwtGen.sign((user as any).id, String(process.env.ACCESS_TOKEN_SECRET), '30s')
+            const newRefreshToken = await this.jwtGen.sign((user as any).id, String(process.env.REFRESH_TOKEN_SECRET), '1d')
+
+            newRefreshTokenArray?.push(newRefreshToken)
+            await this.UserRepo.findOneAndUpdate({_id: (user as any).id}, {refreshToken: newRefreshTokenArray})
             
             user.password = undefined;
             user.verificationCode = undefined
@@ -44,7 +49,7 @@ export default class LoginUsecase implements LoginInterface {
             return {
                 user: user,
                 accessToken,
-                refreshToken
+                refreshToken: newRefreshToken
             }
 
         } catch (error:any) {

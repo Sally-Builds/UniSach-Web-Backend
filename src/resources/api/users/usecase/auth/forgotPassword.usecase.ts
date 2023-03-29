@@ -1,8 +1,8 @@
 import crypto from 'crypto'
 import Exception from "@/utils/exception/Exception";
-import ForgotPassword, { linkArtifacts } from "../interfaces/usecases/forgotPassword.interface";
-import UserRepositoryInterface from "../interfaces/userRepo.interface";
-import EmailInterface from "../../email/email.interface";
+import ForgotPassword, { linkArtifacts } from "../../interfaces/usecases/auth/forgotPassword.interface";
+import UserRepositoryInterface from "../../interfaces/userRepo.interface";
+import EmailInterface from "../../../email/email.interface";
 
 
 export default class ForgotPasswordUsecase implements ForgotPassword {

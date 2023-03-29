@@ -1,15 +1,15 @@
-import User from "../user.interface"
+import User from "../../user.interface"
 
 export default interface LoginInterface {
-    execute(email: string, password: string): Promise<Login.Response>
+    execute(email: string, password: string, refreshToken: string): Promise<Login.Response>
 }
 
-interface NotVerified {
+export interface NotVerified {
     email: string,
     message: string,
 }
 
-interface Verified {
+export interface Verified {
     user: User,
     accessToken: string,
     refreshToken: string

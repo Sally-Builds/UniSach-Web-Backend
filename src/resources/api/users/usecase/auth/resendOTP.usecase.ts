@@ -1,9 +1,9 @@
 import Exception from "@/utils/exception/Exception";
-import ResendOTP, {OtpArtifacts} from "../interfaces/usecases/resendOTP.interface";
-import EmailInterface from "../../email/email.interface";
+import ResendOTP, {OtpArtifacts} from "../../interfaces/usecases/auth/resendOTP.interface";
+import EmailInterface from "../../../email/email.interface";
 import randomstring from 'randomstring'
 import crypto from 'crypto'
-import UserRepositoryInterface from "../interfaces/userRepo.interface";
+import UserRepositoryInterface from "../../interfaces/userRepo.interface";
 
 export default class ResendOTPUsecase implements ResendOTP {
     constructor(private readonly userRepository: UserRepositoryInterface, private Email: EmailInterface) {}

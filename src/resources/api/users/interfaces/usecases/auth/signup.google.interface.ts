@@ -1,4 +1,4 @@
-import User from "../user.interface"
+import User from "../../user.interface"
 import Exception from "@/utils/exception/Exception"
 
 export default interface SignupInterface {

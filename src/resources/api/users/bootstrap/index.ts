@@ -1,20 +1,23 @@
 import UserRepository from "../repository";
-import SignupUsecase from "../usecase/signup.usecase";
+import SignupUsecase from "../usecase/auth/signup.usecase";
 import Exception from "@/utils/exception/Exception";
 import User from "../interfaces/user.interface";
 import { BcryptAdapter } from "../../../../utils/cryptography/passwordEncryption";
 import { JwtAdapter } from "../../../../utils/cryptography/jwtEncryption";
 import GoogleAdapter from "./googleAdapter";
-import SignupWithGoogleUsecase  from '../usecase/signin.google.usecase'
-import {Signup} from "../interfaces/usecases/signup.google.interface";
+import SignupWithGoogleUsecase  from '../usecase/auth/signin.google.usecase'
+import {Signup} from "../interfaces/usecases/auth/signup.google.interface";
 import Email from "../../email";
-import VerifyOTPUsecase from "../usecase/verifyOTP.usecase";
-import ResendOTPUsecase from "../usecase/resendOTP.usecase";
-import ForgotPasswordUsecase from "../usecase/forgotPassword.usecase";
-import PasswordResetUsecase from "../usecase/passwordReset.usecase";
-import LoginUsecase from "../usecase/login.usecase";
-import { VerifyOTP } from "../interfaces/usecases/verifyOTP.interface";
-import { Login } from "../interfaces/usecases/login.interface";
+import VerifyOTPUsecase from "../usecase/auth/verifyOTP.usecase";
+import ResendOTPUsecase from "../usecase/auth/resendOTP.usecase";
+import ForgotPasswordUsecase from "../usecase/auth/forgotPassword.usecase";
+import PasswordResetUsecase from "../usecase/auth/passwordReset.usecase";
+import LoginUsecase from "../usecase/auth/login.usecase";
+import { VerifyOTP } from "../interfaces/usecases/auth/verifyOTP.interface";
+import { Login } from "../interfaces/usecases/auth/login.interface";
+import RefreshTokenUsecase from "../usecase/auth/refreshToken.usecase";
+import {RefreshTokenResponse} from "../interfaces/usecases/auth/refreshToken.interface";
+import LogoutUsecase from "../usecase/auth/logout.usecase";
 
 export default class UserBootstrap  {
     private SignupUsecase;
@@ -24,7 +27,9 @@ export default class UserBootstrap  {
     private ResendOTPUsecase;
     private ForgotPasswordUsecase;
     private PasswordResetUsecase;
-    private LoginUsecase
+    private LoginUsecase;
+    private RefreshTokenUsecase;
+    private LogoutUsecase;
 
 
     constructor() {
@@ -39,6 +44,8 @@ export default class UserBootstrap  {
         this.ForgotPasswordUsecase = new ForgotPasswordUsecase(userRepository, email)
         this.PasswordResetUsecase = new PasswordResetUsecase(userRepository)
         this.LoginUsecase = new LoginUsecase(userRepository, jwtAdapter, bcryptAdapter, this.ResendOTPUsecase)
+        this.RefreshTokenUsecase = new RefreshTokenUsecase(userRepository, jwtAdapter, jwtAdapter)
+        this.LogoutUsecase = new LogoutUsecase(userRepository)
         this.GoogleAdapter = GoogleAdapter
     }
 
@@ -63,9 +70,9 @@ export default class UserBootstrap  {
         }
     }
 
-    public login = async (email: string, password: string): Promise<Login.Response> => {
+    public login = async (email: string, password: string, refreshToken: string): Promise<Login.Response> => {
         try {
-            const data = await this.LoginUsecase.execute(email, password);
+            const data = await this.LoginUsecase.execute(email, password, refreshToken);
 
             return data;
         } catch (error:any) {
@@ -73,9 +80,9 @@ export default class UserBootstrap  {
         }
     }
 
-    public verifyOTP = async (email: string, OTP: string) : Promise<VerifyOTP.Response> => {
+    public verifyOTP = async (email: string, OTP: string, refreshToken: string) : Promise<VerifyOTP.Response> => {
         try {
-            const data = await this.VerifyOTPUsecase.execute(email, OTP)
+            const data = await this.VerifyOTPUsecase.execute(email, OTP, refreshToken)
 
             return data
         } catch (error:any) {
@@ -108,6 +115,26 @@ export default class UserBootstrap  {
             const message = await this.PasswordResetUsecase.execute(token, password);
 
             return message;
+        } catch (error:any) {
+            throw new Exception(error.message, error.statusCode)
+        }
+    }
+
+    public refreshToken = async(refreshToken: string): Promise<RefreshTokenResponse.Response> => {
+        try {
+            const tokens = await this.RefreshTokenUsecase.execute(refreshToken)
+
+            return tokens
+        } catch (error:any) {
+            throw new Exception(error.message, error.statusCode)
+        }
+    }
+
+    public logout = async (refreshToken: string): Promise<string> => {
+        try {
+            const status = this.LogoutUsecase.execute(refreshToken);
+
+            return status
         } catch (error:any) {
             throw new Exception(error.message, error.statusCode)
         }
