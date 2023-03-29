@@ -13,6 +13,7 @@ export default interface User {
     passwordResetToken?: string,
     passwordResetTokenExpiresIn?: number,
     role: string,
+    refreshToken?: string[]
 }
 
 enum Role {
