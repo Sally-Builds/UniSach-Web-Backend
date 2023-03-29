@@ -13,8 +13,8 @@ export default class ForgotPasswordUsecase implements ForgotPassword {
         try {
             // check if email exist
             const user = await this.userRepo.getUserByEmail(email)
-            if(!user) throw new Exception("not found", 404)
-            if(user.googleID) throw new Exception("Not valid for this user", 400)
+            if(!user) throw new Exception("No user with this email", 404)
+            if(user.googleID) throw new Exception("Not a valid operation for this user", 400)
 
             //generate link artifacts
             const {link, expiresIn, passwordResetTokenHash} = this.linkGenerator()

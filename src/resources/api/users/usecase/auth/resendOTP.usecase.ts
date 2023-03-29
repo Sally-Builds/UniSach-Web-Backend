@@ -13,9 +13,9 @@ export default class ResendOTPUsecase implements ResendOTP {
             // check if email exist
             const isUser = await this.userRepository.getUserByEmail(email);
 
-            if(!isUser) throw new Exception("email not found", 404)
+            if(!isUser) throw new Exception("Email not found", 404)
 
-            if(isUser.emailVerificationStatus == 'active') throw new Exception("User already verified", 400)
+            if(isUser.emailVerificationStatus == 'active') throw new Exception("Email already verified", 400)
             //1) generate otp
             const {OTP, OTPHash, expiresIn} = this.otpGenerator()
 

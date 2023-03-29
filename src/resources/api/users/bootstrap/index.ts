@@ -51,8 +51,8 @@ export default class UserBootstrap  {
 
     public signup = async (data: User): Promise<string> => {
         try {
-            const {first_name, last_name, email, password, role} = data
-            const user = await this.SignupUsecase.execute((first_name as string), (last_name as string), email, (password as string), role)
+            const {first_name, last_name, email, password, phone, role} = data
+            const user = await this.SignupUsecase.execute((first_name as string), (last_name as string), email, (password as string), (phone as string), role)
             return user
         } catch (error:any) {
             throw new Exception(error.message, error.statusCode)
