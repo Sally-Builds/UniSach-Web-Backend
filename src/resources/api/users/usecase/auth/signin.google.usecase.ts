@@ -13,6 +13,8 @@ export default class SignupWithGoogleUsecase implements SignupWithGoogleInterfac
         try {
             if(!Object.values(Role).includes(role as Role)) throw new Exception('role not valid', 400)
 
+            if(!googleID) throw new Exception('invalid token', 400)
+
             //1) check if user already exist
             const isExist = await this.userRepository.getUserByEmail(email)
             if(!isExist) {
