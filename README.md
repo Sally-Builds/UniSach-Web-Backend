@@ -1,5 +1,7 @@
 # UniSach(No stress)
-Unisach backend development code [API link](https://unisach-dev.onrender.com/)
+Unisach backend development code 
+* [API link](https://unisach-dev.onrender.com/)
+* [Postman docs link](https://www.postman.com/devstrike/workspace/unisach-public/overview)
 
 [![CI](https://github.com/Devstrike-DigTech/UniSach-Web-Backend/actions/workflows/ci.yml/badge.svg)](https://github.com/Devstrike-DigTech/UniSach-Web-Backend/actions/workflows/ci.yml)
 [![Coverage Status](https://coveralls.io/repos/github/Devstrike-DigTech/UniSach-Web-Backend/badge.svg?branch=main&kill_cache=1)](https://coveralls.io/github/Devstrike-DigTechs/UniSach-Web-Backend?branch=main)
