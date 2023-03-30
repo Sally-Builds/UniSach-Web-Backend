@@ -87,7 +87,6 @@ Unisach backend development code
                         "first_name": "John",
                         "last_name": "Doe",
                         "name": "John Doe",
-                        "googleID": "107656169386193608245",
                         "email": "johndoe@gmail.com",
                         "role": "Pharmacist",
                         "emailVerificationStatus": "active",
