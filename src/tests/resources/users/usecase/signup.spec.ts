@@ -1,9 +1,10 @@
 import SignupUsecase from '../../../../resources/api/users/usecase/auth/signup.usecase';
 import UserRepositoryInterface from '../../../../resources/api/users/interfaces/userRepo.interface';
-import {BcryptAdapter} from "../../../../utils/cryptography/passwordEncryption"
 import PasswordEncryption from '../../../../utils/cryptography/interface/cryptography/passwordEncryption';
 import User from '../../../../resources/api/users/interfaces/user.interface';
 import EmailTest from '../../__helpers__/email.stub';
+import Exception from '../../../../utils/exception/Exception';
+import { UserRepository } from '../../__helpers__/stubs';
 
 
 const user = ():User => {
@@ -18,13 +19,6 @@ const user = ():User => {
     }
 }
 
-const UserRepository: UserRepositoryInterface = {
-    createUser: jest.fn().mockReturnValue(Promise.resolve()),
-    getUserByEmail: jest.fn().mockReturnValue(Promise.resolve(null)),
-    findOne: jest.fn().mockReturnValue(Promise.resolve(null)),
-    findOneAndUpdate: jest.fn().mockReturnValue(Promise.resolve(null)),
-}
-
 
 const PasswordEncrypt: PasswordEncryption = {
     hash: jest.fn(),
@@ -34,18 +28,28 @@ const PasswordEncrypt: PasswordEncryption = {
 describe('Signup usecase', () => {
     const sendMail = new EmailTest()
     const signup = new SignupUsecase(UserRepository, PasswordEncrypt, sendMail)
+    const {first_name, last_name, password, role,email, phone} = user()
 
-    it('should call the geUserByEmail function', async () => {
-        const getEmailSpy = jest.spyOn(UserRepository, 'getUserByEmail')
-        const {first_name, last_name, password, role,email, phone} = user()
-        await signup.execute((first_name as string), (last_name as string), email, (password as string), (phone as string), role);
-        expect(getEmailSpy).toHaveBeenCalled()
+    it('should throw an error not a valid role', async () => {
+        await expect(async () => {await signup.execute((first_name as string), (last_name as string), email, (password as string), (phone as string), 'NotValidRole')})
+        .rejects.toThrow(new Exception('role not valid', 400))
+
+    })
+
+
+    it('throw Error if user Exist', async () => {
+        await expect(async () => {await signup.execute((first_name as string), (last_name as string), email, (password as string), (phone as string), role)})
+        .rejects.toThrow(new Exception("Email already exist", 400))
+    })
+
+    it('throw Error if Password length is less than 8 characters', async () => {
+        await expect(async () => {await signup.execute((first_name as string), (last_name as string), 'email', '1234', (phone as string), role)})
+        .rejects.toThrow(new Exception('password must be greater than 8 characters', 400))
     })
 
     it('should call the password encryption hash function', async() => {
         const hashSpy = jest.spyOn(PasswordEncrypt, 'hash')
-        const {first_name, last_name, password, role,phone, email} = user()
-        await signup.execute((first_name as string), (last_name as string), email, (password as string), (phone as string), role);
+        await signup.execute((first_name as string), (last_name as string), 'email', (password as string), (phone as string), role);
 
         expect(hashSpy).toHaveBeenCalled()
     })
@@ -53,7 +57,7 @@ describe('Signup usecase', () => {
     it('should call the otp generator function', async () => {
         const OTPGeneratorSpy = jest.spyOn(signup, 'otpGenerator')
         const {first_name, last_name, password, role,phone, email} = user()
-        await signup.execute((first_name as string), (last_name as string), email, (password as string), (phone as string), role);
+        await signup.execute((first_name as string), (last_name as string), 'email', (password as string), (phone as string), role);
         
         expect(OTPGeneratorSpy).toHaveBeenCalled()
     })
@@ -61,21 +65,21 @@ describe('Signup usecase', () => {
     it('should call the createUser function', async () => {
         const createUserRepoSpy = jest.spyOn(UserRepository, 'createUser')
         const {first_name, last_name, password, role, phone, email} = user()
-        await signup.execute((first_name as string), (last_name as string), email, (password as string), (phone as string), role);
+        await signup.execute((first_name as string), (last_name as string), 'email', (password as string), (phone as string), role);
         expect(createUserRepoSpy).toHaveBeenCalled()
     })
 
-    it('should send otp to user', async () => {
+    it('should send otp to user Email', async () => {
         const EmailSpy = jest.spyOn(sendMail, 'EmailVerification')
         const {first_name, last_name, password, role, phone, email} = user()
-        await signup.execute((first_name as string), (last_name as string), email, (password as string), (phone as string), role);
+        await signup.execute((first_name as string), (last_name as string), 'email', (password as string), (phone as string), role);
         expect(EmailSpy).toHaveBeenCalled()
     })
 
     it('createUser function should return appropriate result', async () => {
         const createUser = jest.spyOn(UserRepository, 'createUser')
         const {first_name, last_name, password, role,phone, email} = user()
-        const res = await signup.execute((first_name as string), (last_name as string), email, (password as string), (phone as string), role);
+        const res = await signup.execute((first_name as string), (last_name as string), 'email', (password as string), (phone as string), role);
         
         expect(res).toEqual("Verify your email to get started.")
     })
