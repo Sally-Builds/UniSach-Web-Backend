@@ -22,8 +22,8 @@ export default class VerifyOTPUsecase implements VerifyOTPInterface {
 
            const newRefreshTokenArray = !refreshToken ? user.refreshToken : user.refreshToken?.filter((rt: string) => rt != refreshToken) 
            
-           const accessToken = await this.jwtGen.sign((user as any).id, String(process.env.ACCESS_TOKEN_SECRET), '30s')
-            const newRefreshToken = await this.jwtGen.sign((user as any).id, String(process.env.REFRESH_TOKEN_SECRET), '1d')
+           const accessToken = await this.jwtGen.sign((user as any).id, String(process.env.ACCESS_TOKEN_SECRET), '600s')
+            const newRefreshToken = await this.jwtGen.sign((user as any).id, String(process.env.REFRESH_TOKEN_SECRET), '30d')
             let res = {user, accessToken, refreshToken: newRefreshToken}
 
             newRefreshTokenArray?.push(newRefreshToken)
