@@ -17,10 +17,6 @@ export const user = ():User => {
     }
 }
 
-interface dbUserType extends User {
-    id: string
-} 
-
 export const dbUser = (): User[] => {
     return [{
                 first_name: 'Jay',
@@ -32,36 +28,9 @@ export const dbUser = (): User[] => {
                 emailVerificationStatus: 'pending',
                 role: 'User',
                 id: '1',
+                refreshToken: ['one', 'two']
             }]
 }
-
-export const UserRepository: UserRepositoryInterface = {
-    // createUser: jest.fn().mockReturnValue(Promise.resolve(dbUser())),
-    async createUser(data): Promise<User> {
-        return dbUser()[0]
-    },
-    // getUserByEmail: jest.fn().mockReturnValue(Promise.resolve(dbUser())),
-    async getUserByEmail(email) {
-        return (dbUser().find((el: User) => el.email == email) as User)
-    },
-    findOne: jest.fn().mockReturnValue(Promise.resolve(null)),
-    findOneAndUpdate: jest.fn().mockReturnValue(Promise.resolve(null)),
-}
-
-export const UserRepository2: UserRepositoryInterface = {
-    createUser: jest.fn().mockReturnValue(Promise.resolve(dbUser()[0])),
-    getUserByEmail: jest.fn().mockReturnValue(Promise.resolve(null)),
-    findOne: jest.fn().mockReturnValue(Promise.resolve(null)),
-    findOneAndUpdate: jest.fn().mockReturnValue(Promise.resolve(null)),
-}
-
-export const UserRepositoryVerifyOTP: UserRepositoryInterface = {
-    createUser: jest.fn().mockReturnValue(Promise.resolve()),
-    getUserByEmail: jest.fn().mockReturnValue(Promise.resolve(null)),
-    findOne: jest.fn().mockReturnValue(Promise.resolve(dbUser()[0])),
-    findOneAndUpdate: jest.fn().mockReturnValue(Promise.resolve(null)),
-}
-
 
 export const PasswordEncrypt: PasswordEncryption = {
     hash: jest.fn(),
