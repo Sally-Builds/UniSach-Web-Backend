@@ -41,8 +41,8 @@ export default class SignupWithGoogleUsecase implements SignupWithGoogleInterfac
 
 
             
-            const accessToken = await this.jwtGen.sign((isExist as any).id, String(process.env.ACCESS_TOKEN_SECRET), '600s')
-            const refreshToken = await this.jwtGen.sign((isExist as any).id, String(process.env.REFRESH_TOKEN_SECRET), '30d')
+            const accessToken = await this.jwtGen.sign((isExist as any).id, String(process.env.ACCESS_TOKEN_SECRET), String(process.env.ACCESS_TOKEN_EXPIRES_IN))
+            const refreshToken = await this.jwtGen.sign((isExist as any).id, String(process.env.REFRESH_TOKEN_SECRET), String(process.env.REFRESH_TOKEN_EXPIRES_IN))
 
             await this.userRepository.findOneAndUpdate({_id: (isExist as any).id}, {$push: { refreshToken: refreshToken}})
 

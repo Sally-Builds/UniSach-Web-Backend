@@ -12,9 +12,9 @@ export default class VerifyOTPUsecase implements VerifyOTPInterface {
 
     async execute(email: string, OTP: string, refreshToken: string): Promise<VerifyOTP.Response> {
         try {
-            const hashedToken = crypto.createHash('sha256').update(OTP).digest('hex')
+            const hashedOTP = this.encryptOTP(OTP)
 
-            const user = await this.UserRepository.findOne({email, confirmationCodeExpiresIn: {$gt: Date.now()}, verificationCode: hashedToken})
+            const user = await this.UserRepository.findOne({email, confirmationCodeExpiresIn: {$gt: Date.now()}, verificationCode: hashedOTP})
 
             if(!user) throw new Exception("Wrong OTP or Expired OTP", 400)
 
@@ -22,8 +22,8 @@ export default class VerifyOTPUsecase implements VerifyOTPInterface {
 
            const newRefreshTokenArray = !refreshToken ? user.refreshToken : user.refreshToken?.filter((rt: string) => rt != refreshToken) 
            
-           const accessToken = await this.jwtGen.sign((user as any).id, String(process.env.ACCESS_TOKEN_SECRET), '600s')
-            const newRefreshToken = await this.jwtGen.sign((user as any).id, String(process.env.REFRESH_TOKEN_SECRET), '30d')
+            const accessToken = await this.jwtGen.sign((user as any).id, String(process.env.ACCESS_TOKEN_SECRET), String(process.env.ACCESS_TOKEN_EXPIRES_IN))
+            const newRefreshToken = await this.jwtGen.sign((user as any).id, String(process.env.REFRESH_TOKEN_SECRET), String(process.env.REFRESH_TOKEN_EXPIRES_IN))
             let res = {user, accessToken, refreshToken: newRefreshToken}
 
             newRefreshTokenArray?.push(newRefreshToken)
@@ -40,5 +40,9 @@ export default class VerifyOTPUsecase implements VerifyOTPInterface {
         } catch (error:any) {
             throw new Exception(error.message, error.statuscode)
         }
+    }
+
+    encryptOTP(OTP: string): string {
+        return crypto.createHash('sha256').update(OTP).digest('hex')
     }
 }
