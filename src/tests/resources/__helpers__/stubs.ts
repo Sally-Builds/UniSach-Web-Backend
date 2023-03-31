@@ -32,6 +32,7 @@ export const dbUser = (): User[] => {
             }]
 }
 
+
 export const PasswordEncrypt: PasswordEncryption = {
     hash: jest.fn(),
     verify: jest.fn(),

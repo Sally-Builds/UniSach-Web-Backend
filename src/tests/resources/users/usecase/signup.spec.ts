@@ -3,7 +3,8 @@ import PasswordEncryption from '../../../../utils/cryptography/interface/cryptog
 import User from '../../../../resources/api/users/interfaces/user.interface';
 import EmailTest from '../../__helpers__/email.stub';
 import Exception from '../../../../utils/exception/Exception';
-import { UserRepository } from '../../__helpers__/stubs';
+import { dbUser } from '../../__helpers__/stubs';
+import UserRepositoryInterface from '../../../../resources/api/users/interfaces/userRepo.interface';
 
 
 
@@ -19,6 +20,14 @@ const user = ():User => {
     }
 }
 
+const UserRepository: UserRepositoryInterface = {
+    createUser: jest.fn().mockReturnValue(Promise.resolve(dbUser()[0])),
+    async getUserByEmail(email) {
+        return (dbUser().find((el: User) => el.email == email) as User)
+    },
+    findOne: jest.fn().mockReturnValue(Promise.resolve(null)),
+    findOneAndUpdate: jest.fn().mockReturnValue(Promise.resolve(null)),
+}
 
 const PasswordEncrypt: PasswordEncryption = {
     hash: jest.fn().mockReturnValue(Promise.resolve('hashedPassword')),
