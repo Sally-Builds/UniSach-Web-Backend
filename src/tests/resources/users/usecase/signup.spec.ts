@@ -6,6 +6,7 @@ import Exception from '../../../../utils/exception/Exception';
 import { UserRepository } from '../../__helpers__/stubs';
 
 
+
 const user = ():User => {
     return {
             first_name: 'Jay',
@@ -20,7 +21,7 @@ const user = ():User => {
 
 
 const PasswordEncrypt: PasswordEncryption = {
-    hash: jest.fn(),
+    hash: jest.fn().mockReturnValue(Promise.resolve('hashedPassword')),
     verify: jest.fn(),
 }
 
@@ -50,34 +51,49 @@ describe('Signup usecase', () => {
         const hashSpy = jest.spyOn(PasswordEncrypt, 'hash')
         await signup.execute((first_name as string), (last_name as string), 'email', (password as string), (phone as string), role);
 
-        expect(hashSpy).toHaveBeenCalled()
+        expect(hashSpy).toHaveBeenCalledWith(password)
     })
 
     it('should call the otp generator function', async () => {
         const OTPGeneratorSpy = jest.spyOn(signup, 'otpGenerator')
-        const {first_name, last_name, password, role,phone, email} = user()
+        // const {first_name, last_name, password, role,phone, email} = user()
         await signup.execute((first_name as string), (last_name as string), 'email', (password as string), (phone as string), role);
         
-        expect(OTPGeneratorSpy).toHaveBeenCalled()
+        await expect(OTPGeneratorSpy.mock.results[0].value).toEqual(expect.objectContaining({
+            OTP: expect.anything(),
+            expiresIn: expect.anything(),
+            OTPHash: expect.anything()
+        }))
     })
 
     it('should call the createUser function', async () => {
         const createUserRepoSpy = jest.spyOn(UserRepository, 'createUser')
-        const {first_name, last_name, password, role, phone, email} = user()
+        // const {first_name, last_name, password, role, phone, email} = user()
         await signup.execute((first_name as string), (last_name as string), 'email', (password as string), (phone as string), role);
-        expect(createUserRepoSpy).toHaveBeenCalled()
+        expect(createUserRepoSpy).toHaveBeenCalledWith({
+                first_name,
+                last_name,
+                name: `${first_name} ${last_name}`,
+                email: "email",
+                password: expect.anything(), 
+                role, 
+                phone,
+                emailVerificationStatus: 'pending',
+                verificationCode: expect.anything(),
+                confirmationCodeExpiresIn: expect.anything(),
+        })
     })
 
     it('should send otp to user Email', async () => {
         const EmailSpy = jest.spyOn(sendMail, 'EmailVerification')
-        const {first_name, last_name, password, role, phone, email} = user()
+        // const {first_name, last_name, password, role, phone, email} = user()
         await signup.execute((first_name as string), (last_name as string), 'email', (password as string), (phone as string), role);
-        expect(EmailSpy).toHaveBeenCalled()
+        expect(EmailSpy).toHaveBeenCalledWith(expect.anything(), 'email', first_name)
     })
 
     it('createUser function should return appropriate result', async () => {
         const createUser = jest.spyOn(UserRepository, 'createUser')
-        const {first_name, last_name, password, role,phone, email} = user()
+        // const {first_name, last_name, password, role,phone, email} = user()
         const res = await signup.execute((first_name as string), (last_name as string), 'email', (password as string), (phone as string), role);
         
         expect(res).toEqual("Verify your email to get started.")
