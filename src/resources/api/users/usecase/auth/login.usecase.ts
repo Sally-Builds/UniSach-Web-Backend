@@ -33,8 +33,8 @@ export default class LoginUsecase implements LoginInterface {
            const newRefreshTokenArray = !refreshToken ? user.refreshToken : user.refreshToken?.filter((rt: string) => rt != refreshToken) 
 
 
-            const accessToken = await this.jwtGen.sign((user as any).id, String(process.env.ACCESS_TOKEN_SECRET), '600s')
-            const newRefreshToken = await this.jwtGen.sign((user as any).id, String(process.env.REFRESH_TOKEN_SECRET), '30d')
+            const accessToken = await this.jwtGen.sign((user as any).id, String(process.env.ACCESS_TOKEN_SECRET), String(process.env.ACCESS_TOKEN_EXPIRES_IN))
+            const newRefreshToken = await this.jwtGen.sign((user as any).id, String(process.env.REFRESH_TOKEN_SECRET), String(process.env.REFRESH_TOKEN_EXPIRES_IN))
 
             newRefreshTokenArray?.push(newRefreshToken)
             await this.UserRepo.findOneAndUpdate({_id: (user as any).id}, {refreshToken: newRefreshTokenArray})

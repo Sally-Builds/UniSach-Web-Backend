@@ -55,6 +55,13 @@ export const UserRepository2: UserRepositoryInterface = {
     findOneAndUpdate: jest.fn().mockReturnValue(Promise.resolve(null)),
 }
 
+export const UserRepositoryVerifyOTP: UserRepositoryInterface = {
+    createUser: jest.fn().mockReturnValue(Promise.resolve()),
+    getUserByEmail: jest.fn().mockReturnValue(Promise.resolve(null)),
+    findOne: jest.fn().mockReturnValue(Promise.resolve(dbUser()[0])),
+    findOneAndUpdate: jest.fn().mockReturnValue(Promise.resolve(null)),
+}
+
 
 export const PasswordEncrypt: PasswordEncryption = {
     hash: jest.fn(),
@@ -62,7 +69,7 @@ export const PasswordEncrypt: PasswordEncryption = {
 }
 
 export const JwtGen: JwtGenerate = {
-    sign: jest.fn()
+    sign: jest.fn().mockReturnValue(Promise.resolve('ok'))
 }
 
 export const JwtVer: JwtVerify = {

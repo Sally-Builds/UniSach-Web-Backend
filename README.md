@@ -27,6 +27,7 @@ Unisach backend development code
 
     #
 
+
     ### Signup
     * Route - 
         ```
@@ -188,7 +189,7 @@ Unisach backend development code
         ```
 
 
-    * Description
+    * **Description** <br>
         For the request data we see that the role is also included, this is because this route performs two(2) functions:
         * Signup user if user does'nt exist. This requires the role of the authenticating user.
         * login user if user already exist. Any role will do in this case.
@@ -238,6 +239,9 @@ Unisach backend development code
         ```
 
     ### Refresh Token
+    * **Description** <br>
+        This route is responsible for refreshing the accessToken.
+        It is advised to use interceptors to look out for status code ```401``` and then calling this route to be issued a new access token to gain access to authenticated resources.
     * Route
         ```
         GET - /api/users/auth/refreshtoken
@@ -341,3 +345,49 @@ Unisach backend development code
                 "data": "Token is invalid or has expired"
             }
         ```
+
+* ### User
+    This are the following routes used for user CRUD
+    * [Get me](#getme)
+
+    #
+
+    ### Get Me
+    * Route
+    ```javascript
+        GET - "/api/users/me"
+
+        const config = {
+            headers: { Authorization: "Bearer " + `${accessToken}` }
+        };
+    ```
+    * Response
+        ```javascript
+            status: 200
+        ```
+        ```json
+            "data": {
+                    "_id": "6423ebb9890cffec38472278",
+                    "first_name": "John",
+                    "last_name": "Doe",
+                    "name": "John Doe",
+                    "email": "johndoe@gmail.com",
+                    "role": "Pharmacist",
+                    "emailVerificationStatus": "active",
+                    "active": true,
+                    "__v": 0
+                }
+        ```
+    #
+    ```javascript
+        status: 401
+    ```
+    ```json
+        {
+            "statusCode": 401,
+            "message": "Unauthorized access"
+        }
+    ```
+
+
+    
