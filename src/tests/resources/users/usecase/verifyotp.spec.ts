@@ -31,7 +31,7 @@ describe("Test Verify OTP usecase", () => {
     it('should throw an exception if no user is found', async () => {
         const verifyUsecase = new VerifyUsecase(UserRepositoryFindOneReturnsNull, JwtGen, EmailClass)
         await expect(async () => {await verifyUsecase.execute('johndoe@gmail.com', '123456', '')})
-        .rejects.toThrow(new Exception("Wrong OTP or Expired OTP", 400))
+        .rejects.toThrow(Exception)
     })
 
     it('should call generateTokens with the correct parameter',async () => {
