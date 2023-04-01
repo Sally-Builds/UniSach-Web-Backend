@@ -1,6 +1,6 @@
 import {JwtAdapter} from '../../utils/cryptography/jwtEncryption'
 import Token from '../../utils/cryptography/interface/cryptography/jsonwebtoken/token'
-import { JsonWebTokenError } from 'jsonwebtoken'
+import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken'
 import Exception from '../../utils/exception/Exception'
 
 describe('Test JWT Adapter', () => {
@@ -30,7 +30,10 @@ describe('Test JWT Adapter', () => {
         }
 
         delay(3000)
+
+        const res = await jwtAdapter.verify(token, secret)
         
-        await expect(async () => {await jwtAdapter.verify(token, secret)}).rejects.toThrow(JsonWebTokenError)
+        await expect(res).toBeInstanceOf(TokenExpiredError)
+        // await expect(async () => {await jwtAdapter.verify(token, secret)}).resolves.toBeInstanceOf((JsonWebTokenError))
     })
 })

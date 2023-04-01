@@ -34,7 +34,7 @@ async function authenticate (req:Request, res:Response, next:NextFunction): Prom
         req.user = user
         next()
     } catch (error:any) {
-        next(new Exception('Unauthorized access', 401))
+        next(new Exception(error.message, error.statusCode))
     }
 }
 

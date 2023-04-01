@@ -12,7 +12,7 @@ export class JwtAdapter implements JwtGenerate, JwtVerify {
   async verify (token: string, jwtSecret: string): Promise<Token | jwt.JsonWebTokenError> {
     return new Promise((resolve, reject) => {
       jwt.verify(token, jwtSecret as jwt.Secret, (err, payload) => {
-        if (err) return reject(err)
+        if (err) return resolve(err)
 
         resolve(payload as Token)
       })
