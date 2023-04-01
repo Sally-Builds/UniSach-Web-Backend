@@ -28,7 +28,7 @@ export const dbUser = (): User[] => {
                 emailVerificationStatus: 'pending',
                 role: 'User',
                 id: '1',
-                refreshToken: ['one', 'two']
+                refreshToken: ['one', 'two', 'refreshToken']
             }]
 }
 

@@ -36,7 +36,7 @@ export default class UserRepository implements UserRepositoryInterface {
     public async findOneAndUpdate(query: any, userData: any | User): Promise<findOneAndUpdate.Response> {
         try {
             const user = await UserModel.findOneAndUpdate(query, userData, {runValidators: true, new: true})
-            if(!user) throw new Exception("not found", 400)
+            // if(!user) throw new Exception("not found", 400)
 
             return user
         } catch (error:any) {
