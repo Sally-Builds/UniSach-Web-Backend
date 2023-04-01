@@ -15,7 +15,7 @@ export default class LogoutUsecase implements Logout {
 
             return 'success'
         } catch (error:any) {
-            throw new Exception(error.message, error.statuscode)
+            throw new Exception(error.message, error.statusCode)
         }
     }
 }

@@ -32,7 +32,7 @@ export default class VerifyOTPUsecase implements VerifyOTPInterface {
 
             return res
         } catch (error:any) {
-            throw new Exception(error.message, error.statuscode)
+            throw new Exception(error.message, error.statusCode)
         }
     }
 
