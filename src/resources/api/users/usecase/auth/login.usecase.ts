@@ -1,9 +1,10 @@
 import Exception from "@/utils/exception/Exception";
-import LoginInterface, {Login} from "../../interfaces/usecases/auth/login.interface";
+import LoginInterface, {Login, GenerateToken} from "../../interfaces/usecases/auth/login.interface";
 import UserRepositoryInterface from "../../interfaces/userRepo.interface";
 import PasswordEncryption from "../../../../../utils/cryptography/interface/cryptography/passwordEncryption";
 import { JwtGenerate } from "../../../../../utils/cryptography/interface/cryptography/jsonwebtoken/generate";
 import ResendOTP from "../../interfaces/usecases/auth/resendOTP.interface";
+import User from "../../interfaces/user.interface";
 
 export default class LoginUsecase implements LoginInterface {
 
@@ -29,25 +30,19 @@ export default class LoginUsecase implements LoginInterface {
                 }
             }
 
+            
 
            const newRefreshTokenArray = !refreshToken ? user.refreshToken : user.refreshToken?.filter((rt: string) => rt != refreshToken) 
-
-
-            const accessToken = await this.jwtGen.sign((user as any).id, String(process.env.ACCESS_TOKEN_SECRET), String(process.env.ACCESS_TOKEN_EXPIRES_IN))
-            const newRefreshToken = await this.jwtGen.sign((user as any).id, String(process.env.REFRESH_TOKEN_SECRET), String(process.env.REFRESH_TOKEN_EXPIRES_IN))
-
-            newRefreshTokenArray?.push(newRefreshToken)
-            await this.UserRepo.findOneAndUpdate({_id: (user as any).id}, {refreshToken: newRefreshTokenArray})
+           
+           const {accessToken, newRefreshToken} = await this.generateTokens((user as any).id)
+           
+           newRefreshTokenArray?.push(newRefreshToken)
+           await this.UserRepo.findOneAndUpdate({_id: (user as any).id}, {refreshToken: newRefreshTokenArray})
             
-            user.password = undefined;
-            user.verificationCode = undefined
-            user.confirmationCodeExpiresIn = undefined
-            user.passwordResetTokenExpiresIn = undefined
-            user.passwordResetToken = undefined
-            user.refreshToken = undefined
+            this.removeUnwantedFields(user)
 
             return {
-                user: user,
+                user: {...user, refreshToken: undefined},
                 accessToken,
                 refreshToken: newRefreshToken
             }
@@ -55,6 +50,22 @@ export default class LoginUsecase implements LoginInterface {
         } catch (error:any) {
             throw new Exception(error.message, error.statusCode)
         }
+    }
+
+    public async generateTokens(id: string): Promise<GenerateToken.Response> {
+        const accessToken = await this.jwtGen.sign(id, String(process.env.ACCESS_TOKEN_SECRET), String(process.env.ACCESS_TOKEN_EXPIRES_IN))
+        const newRefreshToken = await this.jwtGen.sign(id, String(process.env.REFRESH_TOKEN_SECRET), String(process.env.REFRESH_TOKEN_EXPIRES_IN))
+
+        return {accessToken, newRefreshToken}
+    }   
+    
+    public removeUnwantedFields(user: User) {
+        user.password = undefined;
+        user.verificationCode = undefined
+        user.confirmationCodeExpiresIn = undefined
+        user.passwordResetTokenExpiresIn = undefined
+        user.passwordResetToken = undefined
+        // user.refreshToken = undefined
     }
 }
 
