@@ -38,6 +38,7 @@ export default class SignupWithGoogleUsecase implements SignupWithGoogleInterfac
             return {user, accessToken, refreshToken}
             }
 
+            if(isExist.password) throw new Exception("Bad Request", 400)
             const {accessToken, refreshToken} = await this.generateTokens((isExist as any).id)
 
             await this.userRepository.findOneAndUpdate({_id: (isExist as any).id}, {$push: { refreshToken: refreshToken}})
