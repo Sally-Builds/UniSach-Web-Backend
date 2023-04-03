@@ -14,7 +14,7 @@ export default class UserAPI {
         this.router.post('/auth/login', this.login)
         this.router.post('/auth/signin/google', this.googleRegister)
         this.router.post('/auth/verifyotp', this.verifyOTP)
-        this.router.get('/auth/resendotp', this.resendOTP)
+        this.router.get('/auth/resendotp/:email', this.resendOTP)
         this.router.post('/auth/forgotpassword', this.forgotPassword)
         this.router.post('/auth/passwordreset/:token', this.passwordReset)
         this.router.get('/auth/refreshtoken', this.refreshToken)
@@ -93,7 +93,7 @@ export default class UserAPI {
 
     private resendOTP = async (req:Request, res: Response, next: NextFunction) => {
         try {
-            const message = await this.userService.resendOTP(req.body.email)
+            const message = await this.userService.resendOTP(req.params.email)
 
             res.status(200).json({
                 data: message
