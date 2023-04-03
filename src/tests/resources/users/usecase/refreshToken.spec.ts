@@ -85,7 +85,6 @@ describe('Refresh Token usecase', () => {
             try {
                 await refreshTokenUsecase.execute('refreshToken')
             } catch (error) {
-                console.log(findOneAndUpdateSpy.mock.calls[0][1])
                 expect(findOneAndUpdateSpy).toHaveBeenCalledWith({_id: dbUser()[0].id}, {refreshToken: []})
             }
         })
