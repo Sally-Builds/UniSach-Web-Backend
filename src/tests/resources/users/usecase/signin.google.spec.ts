@@ -20,7 +20,7 @@ const user = ():User => {
 
 const UserRepositoryFindUserByEmailReturnsAValue:UserRepositoryInterface = {
     createUser: jest.fn().mockReturnValue(Promise.resolve()),
-    getUserByEmail: jest.fn().mockReturnValue(Promise.resolve({...dbUser()[0], googleID: '1234567890'})),
+    getUserByEmail: jest.fn().mockReturnValue(Promise.resolve({...dbUser()[0], googleID: '1234567890', password: undefined})),
     findOne: jest.fn().mockReturnValue(Promise.resolve(null)),
     findOneAndUpdate: jest.fn().mockReturnValue(Promise.resolve(null)),
 }
@@ -46,6 +46,7 @@ describe("Register/signup with google", () => {
     await expect(async () => {await signupWithGoogle.execute((first_name as string), (last_name as string), email, '', role)}).rejects.toThrow(Exception)
 
     })
+
 
     it('should call getUserByEmail with the correct email', async () => {
         const getEmailSpy = jest.spyOn(UserRepositoryFindUserByEmailReturnsAValue, 'getUserByEmail')
