@@ -2,7 +2,7 @@ import { JwtGenerate } from "@/utils/cryptography/interface/cryptography/jsonweb
 import { JwtVerify } from "@/utils/cryptography/interface/cryptography/jsonwebtoken/verify";
 import Exception from "@/utils/exception/Exception";
 import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
-import RefreshToken, {RefreshTokenResponse} from "../../interfaces/usecases/auth/refreshToken.interface";
+import RefreshToken, {GenerateToken, RefreshTokenResponse} from "../../interfaces/usecases/auth/refreshToken.interface";
 import UserRepositoryInterface from "../../interfaces/userRepo.interface";
 
 
@@ -22,21 +22,19 @@ export default class RefreshTokenUsecase implements RefreshToken {
                 if(hackedUser) await this.userRepo.findOneAndUpdate({_id: (hackedUser as any).id}, {refreshToken: []})
 
                 throw new Exception('forbidden', 403)
-                
             }
 
             const newRefreshTokenArray = foundUser.refreshToken?.filter((rt: string) => rt != refreshToken);
 
-            const refToken = await this.jwtVerify.verify(refreshToken, String(process.env.REFRESH_TOKEN_SECRET))
+            const ExpiredOrInvalidToken = await this.jwtVerify.verify(refreshToken, String(process.env.REFRESH_TOKEN_SECRET))
             
-            if(refToken instanceof TokenExpiredError) {
+            if(ExpiredOrInvalidToken instanceof TokenExpiredError) {
                 await this.userRepo.findOneAndUpdate({_id: (foundUser as any).id}, {refreshToken: newRefreshTokenArray})
             }
 
-            if(refToken instanceof JsonWebTokenError || refToken.id != (foundUser as any).id) throw new Exception("forbidden", 403)
+            if(ExpiredOrInvalidToken instanceof JsonWebTokenError || ExpiredOrInvalidToken.id != (foundUser as any).id) throw new Exception("forbidden", 403)
 
-            const newRefreshToken = await this.jwtGenerate.sign((foundUser as any).id, String(process.env.REFRESH_TOKEN_SECRET), String(process.env.REFRESH_TOKEN_EXPIRES_IN))
-            const accessToken = await this.jwtGenerate.sign((foundUser as any).id, String(process.env.ACCESS_TOKEN_SECRET), String(process.env.ACCESS_TOKEN_EXPIRES_IN))
+            const {accessToken, newRefreshToken} = await this.generateTokens((foundUser as any).id)
 
             newRefreshTokenArray?.push(newRefreshToken)
             await this.userRepo.findOneAndUpdate({_id: (foundUser as any).id}, {refreshToken: newRefreshTokenArray})
@@ -45,5 +43,12 @@ export default class RefreshTokenUsecase implements RefreshToken {
         } catch (error:any) {
             throw new Exception(error.message, error.statusCode)
         }
+    }
+
+    public async generateTokens(id: string): Promise<GenerateToken.Response> {
+        const newRefreshToken = await this.jwtGenerate.sign(id, String(process.env.REFRESH_TOKEN_SECRET), String(process.env.REFRESH_TOKEN_EXPIRES_IN))
+        const accessToken = await this.jwtGenerate.sign(id, String(process.env.ACCESS_TOKEN_SECRET), String(process.env.ACCESS_TOKEN_EXPIRES_IN))
+
+            return {accessToken, newRefreshToken}
     }
 }
