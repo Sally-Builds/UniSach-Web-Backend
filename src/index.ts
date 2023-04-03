@@ -1,4 +1,4 @@
-import express, {Application} from 'express';
+import express, {Application, NextFunction, Request, Response} from 'express';
 import { connect, ConnectOptions } from 'mongoose'
 import cors from 'cors';
 import compression from 'compression';
@@ -7,6 +7,7 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import UserAPI from './resources/api/users';
 import errorMiddleware from './middleware/error.middleware';
+import Exception from './utils/exception/Exception';
 
 
 
@@ -37,6 +38,11 @@ class App {
     //routes
     private initializeRoutes () {
         this.app.use('/api/users', new UserAPI(this.app).router)
+
+
+        this.app.all('*', (req:Request, res:Response, next: NextFunction) => {
+          next(new Exception(`Can't find ${req.originalUrl} on this server`, 404));
+        });
     }
 
     //db connection
