@@ -3,6 +3,7 @@ import { JwtGenerate } from "../../../utils/cryptography/interface/cryptography/
 import {JwtVerify} from '../../../utils/cryptography/interface/cryptography/jsonwebtoken/verify'
 import PasswordEncryption from "../../../utils/cryptography/interface/cryptography/passwordEncryption"
 import User from "../../../resources/api/users/interfaces/user.interface"
+import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken"
 
 export const user = ():User => {
     return {
@@ -48,5 +49,9 @@ export const JwtGen: JwtGenerate = {
 }
 
 export const JwtVer: JwtVerify = {
-    verify: jest.fn()
+    verify: jest.fn().mockReturnValue(Promise.resolve({id: '1', expiresIn: 123456978}))
+}
+
+export const JwtVerExpiredToken: JwtVerify = {
+    verify: jest.fn().mockReturnValue(Promise.resolve(new TokenExpiredError('expired token', new Date(1680515458983))))
 }
