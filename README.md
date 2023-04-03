@@ -112,7 +112,7 @@ Unisach backend development code
     ### Resend OTP
     * Route
         ```
-        GET - /api/users/auth/resendotp
+        GET - /api/users/auth/resendotp/:email
         ```
     * RESPONSE
         ```javascript

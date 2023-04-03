@@ -3,6 +3,7 @@ import { JwtGenerate } from "../../../utils/cryptography/interface/cryptography/
 import {JwtVerify} from '../../../utils/cryptography/interface/cryptography/jsonwebtoken/verify'
 import PasswordEncryption from "../../../utils/cryptography/interface/cryptography/passwordEncryption"
 import User from "../../../resources/api/users/interfaces/user.interface"
+import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken"
 
 export const user = ():User => {
     return {
@@ -17,10 +18,6 @@ export const user = ():User => {
     }
 }
 
-interface dbUserType extends User {
-    id: string
-} 
-
 export const dbUser = (): User[] => {
     return [{
                 first_name: 'Jay',
@@ -32,40 +29,19 @@ export const dbUser = (): User[] => {
                 emailVerificationStatus: 'pending',
                 role: 'User',
                 id: '1',
+                refreshToken: ['one', 'two', 'refreshToken']
             }]
 }
 
-export const UserRepository: UserRepositoryInterface = {
-    // createUser: jest.fn().mockReturnValue(Promise.resolve(dbUser())),
-    async createUser(data): Promise<User> {
-        return dbUser()[0]
-    },
-    // getUserByEmail: jest.fn().mockReturnValue(Promise.resolve(dbUser())),
-    async getUserByEmail(email) {
-        return (dbUser().find((el: User) => el.email == email) as User)
-    },
-    findOne: jest.fn().mockReturnValue(Promise.resolve(null)),
-    findOneAndUpdate: jest.fn().mockReturnValue(Promise.resolve(null)),
-}
 
-export const UserRepository2: UserRepositoryInterface = {
-    createUser: jest.fn().mockReturnValue(Promise.resolve(dbUser()[0])),
-    getUserByEmail: jest.fn().mockReturnValue(Promise.resolve(null)),
-    findOne: jest.fn().mockReturnValue(Promise.resolve(null)),
-    findOneAndUpdate: jest.fn().mockReturnValue(Promise.resolve(null)),
-}
-
-export const UserRepositoryVerifyOTP: UserRepositoryInterface = {
-    createUser: jest.fn().mockReturnValue(Promise.resolve()),
-    getUserByEmail: jest.fn().mockReturnValue(Promise.resolve(null)),
-    findOne: jest.fn().mockReturnValue(Promise.resolve(dbUser()[0])),
-    findOneAndUpdate: jest.fn().mockReturnValue(Promise.resolve(null)),
-}
-
-
-export const PasswordEncrypt: PasswordEncryption = {
+export const PasswordEncryptWrongPassword: PasswordEncryption = {
     hash: jest.fn(),
-    verify: jest.fn(),
+    verify: jest.fn().mockReturnValue(Promise.resolve(false)),
+}
+
+export const PasswordEncryptCorrectPassword: PasswordEncryption = {
+    hash: jest.fn(),
+    verify: jest.fn().mockReturnValue(Promise.resolve(true)),
 }
 
 export const JwtGen: JwtGenerate = {
@@ -73,5 +49,9 @@ export const JwtGen: JwtGenerate = {
 }
 
 export const JwtVer: JwtVerify = {
-    verify: jest.fn()
+    verify: jest.fn().mockReturnValue(Promise.resolve({id: '1', expiresIn: 123456978}))
+}
+
+export const JwtVerExpiredToken: JwtVerify = {
+    verify: jest.fn().mockReturnValue(Promise.resolve(new TokenExpiredError('expired token', new Date(1680515458983))))
 }

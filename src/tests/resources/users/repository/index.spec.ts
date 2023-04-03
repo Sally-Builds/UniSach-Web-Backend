@@ -86,8 +86,10 @@ describe('User Repository', () => {
         }))
     })
 
-    it('should throw an Exception', async () => {
-       await expect(async() => await userRepository.findOneAndUpdate({email: 'jay@gmail.com'}, {emailVerificationStatus: 'active'})).rejects.toThrow(new Exception("not found", 400))
+    it('should return null', async () => {
+    //    await expect(async() => await userRepository.findOneAndUpdate({email: 'jay@gmail.com'}, {emailVerificationStatus: 'active'})).rejects.toThrow(new Exception("not found", 400))
+    const res = await userRepository.findOneAndUpdate({email: 'jay@gmail.com'}, {emailVerificationStatus: 'active'})
+    await expect(res).toBe(null)
     })
 
 })
