@@ -33,9 +33,14 @@ export const dbUser = (): User[] => {
 }
 
 
-export const PasswordEncrypt: PasswordEncryption = {
+export const PasswordEncryptWrongPassword: PasswordEncryption = {
     hash: jest.fn(),
-    verify: jest.fn(),
+    verify: jest.fn().mockReturnValue(Promise.resolve(false)),
+}
+
+export const PasswordEncryptCorrectPassword: PasswordEncryption = {
+    hash: jest.fn(),
+    verify: jest.fn().mockReturnValue(Promise.resolve(true)),
 }
 
 export const JwtGen: JwtGenerate = {
