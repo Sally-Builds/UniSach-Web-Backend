@@ -1,8 +1,8 @@
-import PasswordReset from '../../../../resources/api/users/usecase/auth/passwordReset.usecase'
-import UserRepositoryInterface from '../../../../resources/api/users/interfaces/userRepo.interface'
+import PasswordReset from '../../../../../resources/api/users/usecase/auth/passwordReset.usecase'
+import UserRepositoryInterface from '../../../../../resources/api/users/interfaces/userRepo.interface'
 import crypto from 'crypto'
-import {dbUser, user} from '../../__helpers__/stubs'
-import Exception from '../../../../utils/exception/Exception'
+import {dbUser, user} from '../../../__helpers__/stubs'
+import Exception from '../../../../../utils/exception/Exception'
 
 
 const UserRepositoryReturnsAValue: UserRepositoryInterface = {

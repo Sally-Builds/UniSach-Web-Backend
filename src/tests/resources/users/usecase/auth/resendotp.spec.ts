@@ -1,8 +1,8 @@
-import ResendOTPUsecase from '../../../../resources/api/users/usecase/auth/resendOTP.usecase'
-import Exception from '../../../../utils/exception/Exception'
-import EmailTest from '../../__helpers__/email.stub'
-import UserRepositoryInterface from '../../../../resources/api/users/interfaces/userRepo.interface'
-import { dbUser, user } from '../../__helpers__/stubs'
+import ResendOTPUsecase from '../../../../../resources/api/users/usecase/auth/resendOTP.usecase'
+import Exception from '../../../../../utils/exception/Exception'
+import EmailTest from '../../../__helpers__/email.stub'
+import UserRepositoryInterface from '../../../../../resources/api/users/interfaces/userRepo.interface'
+import { dbUser, user } from '../../../__helpers__/stubs'
 
 const UserRepositoryFindUserByEmailReturnsAValue:UserRepositoryInterface = {
     createUser: jest.fn().mockReturnValue(Promise.resolve()),

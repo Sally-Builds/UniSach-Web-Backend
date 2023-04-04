@@ -1,8 +1,8 @@
-import VerifyUsecase from '../../../../resources/api/users/usecase/auth/verifyOTP.usecase'
-import {JwtGen, dbUser } from '../../__helpers__/stubs';
-import EmailTest from '../../__helpers__/email.stub';
-import Exception from '../../../../utils/exception/Exception';
-import UserRepositoryInterface from '../../../../resources/api/users/interfaces/userRepo.interface';
+import VerifyUsecase from '../../../../../resources/api/users/usecase/auth/verifyOTP.usecase'
+import {JwtGen, dbUser } from '../../../__helpers__/stubs';
+import EmailTest from '../../../__helpers__/email.stub';
+import Exception from '../../../../../utils/exception/Exception';
+import UserRepositoryInterface from '../../../../../resources/api/users/interfaces/userRepo.interface';
 
 
 const UserRepositoryFindOneReturnsAValue:UserRepositoryInterface = {
