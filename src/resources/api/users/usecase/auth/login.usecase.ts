@@ -42,7 +42,7 @@ export default class LoginUsecase implements LoginInterface {
             this.removeUnwantedFields(user)
 
             return {
-                user: {...user, refreshToken: undefined},
+                user: {...JSON.parse(JSON.stringify(user)), refreshToken: undefined},
                 accessToken,
                 refreshToken: newRefreshToken
             }
