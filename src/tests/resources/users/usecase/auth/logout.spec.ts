@@ -1,6 +1,6 @@
-import UserRepositoryInterface from '../../../../resources/api/users/interfaces/userRepo.interface'
-import LogoutUsecase from '../../../../resources/api/users/usecase/auth/logout.usecase'
-import {dbUser} from '../../__helpers__/stubs'
+import UserRepositoryInterface from '../../../../../resources/api/users/interfaces/userRepo.interface'
+import LogoutUsecase from '../../../../../resources/api/users/usecase/auth/logout.usecase'
+import {dbUser} from '../../../__helpers__/stubs'
 
 const UserRepositoryReturnsAValue: UserRepositoryInterface = {
     createUser: jest.fn(),

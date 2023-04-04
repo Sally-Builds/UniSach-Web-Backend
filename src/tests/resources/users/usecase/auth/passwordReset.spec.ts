@@ -1,8 +1,8 @@
-import PasswordReset from '../../../../resources/api/users/usecase/auth/passwordReset.usecase'
-import UserRepositoryInterface from '../../../../resources/api/users/interfaces/userRepo.interface'
+import PasswordReset from '../../../../../resources/api/users/usecase/auth/passwordReset.usecase'
+import UserRepositoryInterface from '../../../../../resources/api/users/interfaces/userRepo.interface'
 import crypto from 'crypto'
-import {dbUser, user} from '../../__helpers__/stubs'
-import Exception from '../../../../utils/exception/Exception'
+import {dbUser, user, PasswordEncryptCorrectPassword} from '../../../__helpers__/stubs'
+import Exception from '../../../../../utils/exception/Exception'
 
 
 const UserRepositoryReturnsAValue: UserRepositoryInterface = {
@@ -20,9 +20,9 @@ const UserRepositoryReturnsNull: UserRepositoryInterface = {
 }
 
 describe('Password Reset usecase', () => {
-    const passwordResetUsecase = new PasswordReset(UserRepositoryReturnsAValue)
+    const passwordResetUsecase = new PasswordReset(UserRepositoryReturnsAValue, PasswordEncryptCorrectPassword)
     const {email, password} = user()
-    it('should hash the password reset token', async () => {
+    it('should hash the reset token', async () => {
         const cryptoSpy = jest.spyOn(crypto, 'createHash')
         await passwordResetUsecase.execute('hashedToken', (password as string))
 
@@ -38,16 +38,26 @@ describe('Password Reset usecase', () => {
     })
 
     it('should throw an Exception if no user is found', async () => {
-        const passwordResetUsecase = new PasswordReset(UserRepositoryReturnsNull)
+        const passwordResetUsecase = new PasswordReset(UserRepositoryReturnsNull, PasswordEncryptCorrectPassword)
 
         expect(async () => {await passwordResetUsecase.execute('hashed', (password as string))}).rejects.toThrow(Exception)
     })
 
+    it('should hash the new password', async () => {
+        const hashedPasswordSpy = jest.spyOn(PasswordEncryptCorrectPassword, 'hash')
+        await passwordResetUsecase.execute('hashedTokens', (password as string))
+
+        expect(hashedPasswordSpy).toHaveBeenCalledWith(password)
+    })
+
     it('should update the users password with the correct arguments',async () => {
             const findOneAndUpdateSpy = jest.spyOn(UserRepositoryReturnsAValue, 'findOneAndUpdate')
+            const hashedPasswordSpy = jest.spyOn(PasswordEncryptCorrectPassword, 'hash')
             await passwordResetUsecase.execute('hashedTokens', (password as string))
 
-            expect(findOneAndUpdateSpy).toHaveBeenCalledWith({email}, {password})
+            const hashedPassword = hashedPasswordSpy.mock.results[0].value
+
+            expect(findOneAndUpdateSpy).toHaveBeenCalledWith({email}, {password: hashedPassword})
     })
 
     it('should return a string', async () => {

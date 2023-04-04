@@ -1,8 +1,8 @@
-import ForgotPassword from '../../../../resources/api/users/usecase/auth/forgotPassword.usecase'
-import Exception from '../../../../utils/exception/Exception'
-import UserRepositoryInterface from '../../../../resources/api/users/interfaces/userRepo.interface'
-import {dbUser, user} from '../../__helpers__/stubs'
-import EmailTest from '../../__helpers__/email.stub'
+import ForgotPassword from '../../../../../resources/api/users/usecase/auth/forgotPassword.usecase'
+import Exception from '../../../../../utils/exception/Exception'
+import UserRepositoryInterface from '../../../../../resources/api/users/interfaces/userRepo.interface'
+import {dbUser, user} from '../../../__helpers__/stubs'
+import EmailTest from '../../../__helpers__/email.stub'
 
 const UserRepositoryReturnsAValue: UserRepositoryInterface = {
     createUser: jest.fn(),

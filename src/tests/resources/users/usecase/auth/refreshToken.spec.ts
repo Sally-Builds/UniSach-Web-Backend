@@ -1,7 +1,7 @@
-import RefreshToken from '../../../../resources/api/users/usecase/auth/refreshToken.usecase'
-import UserRepositoryInterface from '../../../../resources/api/users/interfaces/userRepo.interface'
-import {JwtGen, JwtVer, JwtVerExpiredToken, dbUser} from '../../__helpers__/stubs'
-import User from '../../../../resources/api/users/interfaces/user.interface'
+import RefreshToken from '../../../../../resources/api/users/usecase/auth/refreshToken.usecase'
+import UserRepositoryInterface from '../../../../../resources/api/users/interfaces/userRepo.interface'
+import {JwtGen, JwtVer, JwtVerExpiredToken, dbUser} from '../../../__helpers__/stubs'
+import User from '../../../../../resources/api/users/interfaces/user.interface'
 
 
 const db: User = {

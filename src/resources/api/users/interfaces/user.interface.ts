@@ -14,7 +14,9 @@ export default interface User {
     passwordResetToken?: string,
     passwordResetTokenExpiresIn?: number,
     role: string,
-    refreshToken?: string[]
+    refreshToken?: string[],
+    created_at?: Date,
+    updated_at?: Date
 }
 
 enum Role {

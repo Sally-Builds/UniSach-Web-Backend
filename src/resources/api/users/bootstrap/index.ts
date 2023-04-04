@@ -18,6 +18,8 @@ import { Login } from "../interfaces/usecases/auth/login.interface";
 import RefreshTokenUsecase from "../usecase/auth/refreshToken.usecase";
 import {RefreshTokenResponse} from "../interfaces/usecases/auth/refreshToken.interface";
 import LogoutUsecase from "../usecase/auth/logout.usecase";
+import UpdateUsecase  from "../usecase/userOp/update.usecase";
+import { Update } from "../interfaces/usecases/userOp/update.interface";
 
 export default class UserBootstrap  {
     private SignupUsecase;
@@ -31,6 +33,8 @@ export default class UserBootstrap  {
     private RefreshTokenUsecase;
     private LogoutUsecase;
 
+    private UpdateUsecase;
+
 
     constructor() {
         const userRepository = new UserRepository()
@@ -42,10 +46,11 @@ export default class UserBootstrap  {
         this.VerifyOTPUsecase = new VerifyOTPUsecase(userRepository, jwtAdapter,email)
         this.ResendOTPUsecase = new ResendOTPUsecase(userRepository, email)
         this.ForgotPasswordUsecase = new ForgotPasswordUsecase(userRepository, email)
-        this.PasswordResetUsecase = new PasswordResetUsecase(userRepository)
+        this.PasswordResetUsecase = new PasswordResetUsecase(userRepository, bcryptAdapter)
         this.LoginUsecase = new LoginUsecase(userRepository, jwtAdapter, bcryptAdapter, this.ResendOTPUsecase)
         this.RefreshTokenUsecase = new RefreshTokenUsecase(userRepository, jwtAdapter, jwtAdapter)
         this.LogoutUsecase = new LogoutUsecase(userRepository)
+        this.UpdateUsecase = new UpdateUsecase(userRepository)
         this.GoogleAdapter = GoogleAdapter
     }
 
@@ -135,6 +140,16 @@ export default class UserBootstrap  {
             const status = this.LogoutUsecase.execute(refreshToken);
 
             return status
+        } catch (error:any) {
+            throw new Exception(error.message, error.statusCode)
+        }
+    }
+
+    public update = async (data: Update.Request, id: string) => {
+        try {
+            const result = await this.UpdateUsecase.execute(data, id)
+
+            return result
         } catch (error:any) {
             throw new Exception(error.message, error.statusCode)
         }

@@ -349,6 +349,7 @@ Unisach backend development code
 * ### User
     This are the following routes used for user CRUD
     * [Get me](#getme)
+    * [Update me](#update-user)
 
     #
 
@@ -387,6 +388,47 @@ Unisach backend development code
             "statusCode": 401,
             "message": "Unauthorized access"
         }
+    ```
+
+    ### update User
+    * Route
+    ```javascript
+        PATCH - "/api/users/me"
+    ```
+    * Request<br>
+    The "?" in the keys means that the fields are not required
+    ```json
+        {
+            "first_name?": "Javier",
+            "last_name?": "Rodriguez",
+            "phone?": "+23489019393"
+        }
+    ```
+    * Response
+    ```javascript
+        status: 200
+    ```
+    ```json
+        "data": {
+                    "_id": "6423ebb9890cffec38472278",
+                    "first_name": "Javier",
+                    "last_name": "Rodriguez",
+                    "name": "Javier Rodriguez",
+                    "email": "johndoe@gmail.com",
+                    "role": "Pharmacist",
+                    "emailVerificationStatus": "active",
+                    "active": true,
+                    "__v": 0
+                }
+    ```
+    ```javascript
+        status: 404
+    ```
+    ```json
+        "data": {
+                    "message": "user not found",
+                    "statusCode": 404
+                }
     ```
 
 

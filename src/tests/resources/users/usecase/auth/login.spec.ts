@@ -1,7 +1,7 @@
-import LoginUsecase from '../../../../resources/api/users/usecase/auth/login.usecase'
-import UserRepositoryInterface from '../../../../resources/api/users/interfaces/userRepo.interface'
-import {JwtGen, user, dbUser, PasswordEncryptWrongPassword, PasswordEncryptCorrectPassword} from '../../__helpers__/stubs'
-import ResendOTP from '../../../../resources/api/users/interfaces/usecases/auth/resendOTP.interface'
+import LoginUsecase from '../../../../../resources/api/users/usecase/auth/login.usecase'
+import UserRepositoryInterface from '../../../../../resources/api/users/interfaces/userRepo.interface'
+import {JwtGen, user, dbUser, PasswordEncryptWrongPassword, PasswordEncryptCorrectPassword} from '../../../__helpers__/stubs'
+import ResendOTP from '../../../../../resources/api/users/interfaces/usecases/auth/resendOTP.interface'
 
 const UserRepositoryReturnsNull: UserRepositoryInterface = {
     createUser: jest.fn(),
