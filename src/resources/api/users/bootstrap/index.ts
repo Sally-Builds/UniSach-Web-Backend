@@ -46,7 +46,7 @@ export default class UserBootstrap  {
         this.VerifyOTPUsecase = new VerifyOTPUsecase(userRepository, jwtAdapter,email)
         this.ResendOTPUsecase = new ResendOTPUsecase(userRepository, email)
         this.ForgotPasswordUsecase = new ForgotPasswordUsecase(userRepository, email)
-        this.PasswordResetUsecase = new PasswordResetUsecase(userRepository)
+        this.PasswordResetUsecase = new PasswordResetUsecase(userRepository, bcryptAdapter)
         this.LoginUsecase = new LoginUsecase(userRepository, jwtAdapter, bcryptAdapter, this.ResendOTPUsecase)
         this.RefreshTokenUsecase = new RefreshTokenUsecase(userRepository, jwtAdapter, jwtAdapter)
         this.LogoutUsecase = new LogoutUsecase(userRepository)

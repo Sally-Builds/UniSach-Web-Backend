@@ -40,7 +40,7 @@ export const PasswordEncryptWrongPassword: PasswordEncryption = {
 }
 
 export const PasswordEncryptCorrectPassword: PasswordEncryption = {
-    hash: jest.fn(),
+    hash: jest.fn().mockReturnValue(Promise.resolve('hashedPassword')),
     verify: jest.fn().mockReturnValue(Promise.resolve(true)),
 }
 
