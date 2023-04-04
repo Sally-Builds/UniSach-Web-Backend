@@ -349,6 +349,7 @@ Unisach backend development code
 * ### User
     This are the following routes used for user CRUD
     * [Get me](#getme)
+    * [Update me](#update-user)
 
     #
 
@@ -404,6 +405,9 @@ Unisach backend development code
         }
     ```
     * Response
+    ```javascript
+        status: 200
+    ```
     ```json
         "data": {
                     "_id": "6423ebb9890cffec38472278",
@@ -415,6 +419,15 @@ Unisach backend development code
                     "emailVerificationStatus": "active",
                     "active": true,
                     "__v": 0
+                }
+    ```
+    ```javascript
+        status: 404
+    ```
+    ```json
+        "data": {
+                    "message": "user not found",
+                    "statusCode": 404
                 }
     ```
 
