@@ -24,7 +24,7 @@ describe('Password update usecase', () => {
     const passwordUpdateUsecase = new PasswordUpdate(UserRepositoryFindOneAndUpdateReturnsAValue, PasswordEncryptCorrectPassword)
 
     it('should throw an Exception if password length is less than 8', async () => {
-        await expect(passwordUpdateUsecase.execute('1', 'pass', 'test1234')).rejects.toMatchObject({message: "Incorrect password", statusCode: 400})
+        await expect(passwordUpdateUsecase.execute('1', 'pass', 'test1234')).rejects.toMatchObject({message: "current password incorrect", statusCode: 400})
     })
 
     it('should throw an Exception if new password length is less than 8', async () => {
