@@ -21,6 +21,7 @@ export default class UserAPI {
         this.router.get('/auth/logout', this.logout)
         this.router.get('/me', authenticate, this.getMe)
         this.router.patch('/me', authenticate, this.updateMe)
+        this.router.patch('/updatepassword', authenticate, this.passwordUpdate)
     }
 
     private register  = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
@@ -184,4 +185,16 @@ export default class UserAPI {
         }
     }
 
+    private passwordUpdate = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const user = req.user as User
+            const result = await this.userService.passwordUpdate((user.id as string), req.body.password, req.body.newPassword)
+
+            res.status(200).json({
+                data: result
+            })
+        } catch (error:any) {
+            next(new Exception(error.message, error.statusCode))
+        }
+    }
 }

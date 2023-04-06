@@ -350,6 +350,7 @@ Unisach backend development code
     This are the following routes used for user CRUD
     * [Get me](#getme)
     * [Update me](#update-user)
+    * [Update Password](#update-password)
 
     #
 
@@ -429,6 +430,40 @@ Unisach backend development code
                     "message": "user not found",
                     "statusCode": 404
                 }
+    ```
+    
+    ### Update Password
+    * Route
+    ```javascript
+        PATCH - "/api/users/updatepassword"
+    ```
+    * Request
+    ```json
+        {
+            "password": "currentPassword",
+            "newPassword": "newPassword"
+        }
+    ```
+    * Response
+    ```js
+        status: 200
+    ```
+    ```json
+        {
+            "data": "successful"
+        }
+    ```
+    ```js
+        {
+        statusCode: 401
+        message: "current password incorrect" // if current password is incorrect
+        }
+    ```
+    ```js
+        {
+        statusCode: 400
+        message: "Password must be greater than 8 characters"
+        }
     ```
 
 

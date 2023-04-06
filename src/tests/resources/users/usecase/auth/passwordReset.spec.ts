@@ -55,7 +55,7 @@ describe('Password Reset usecase', () => {
             const hashedPasswordSpy = jest.spyOn(PasswordEncryptCorrectPassword, 'hash')
             await passwordResetUsecase.execute('hashedTokens', (password as string))
 
-            const hashedPassword = hashedPasswordSpy.mock.results[0].value
+            const hashedPassword = await hashedPasswordSpy.mock.results[0].value
 
             expect(findOneAndUpdateSpy).toHaveBeenCalledWith({email}, {password: hashedPassword})
     })
