@@ -16,7 +16,7 @@ export default class PasswordResetUsecase implements PasswordReset {
 
             if(!user) throw new Exception('Token is invalid or has expired', 400);
 
-            const hashedPassword = this.passwordEncrypt.hash(password)
+            const hashedPassword = await this.passwordEncrypt.hash(password)
 
             await this.userRepo.findOneAndUpdate({email: user.email}, {password: hashedPassword})
 
