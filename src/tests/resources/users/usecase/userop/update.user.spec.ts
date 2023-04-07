@@ -2,7 +2,6 @@ import UpdateUsecase from '../../../../../resources/api/users/usecase/userOp/upd
 import UserRepositoryInterface from '../../../../../resources/api/users/interfaces/userRepo.interface'
 import {Update} from '../../../../../resources/api/users/interfaces/usecases/userOp/update.interface'
 import {dbUser} from '../../../__helpers__/stubs'
-import Exception from '../../../../../utils/exception/Exception'
 
 const UserRepositoryFindOneAndUpdateReturnsAValue: UserRepositoryInterface = {
     findOne: jest.fn().mockReturnValue(Promise.resolve(dbUser()[0])),
