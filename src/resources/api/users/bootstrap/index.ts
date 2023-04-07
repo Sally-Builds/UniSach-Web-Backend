@@ -21,6 +21,7 @@ import LogoutUsecase from "../usecase/auth/logout.usecase";
 import UpdateUsecase  from "../usecase/userOp/update.usecase";
 import { Update } from "../interfaces/usecases/userOp/update.interface";
 import PasswordUpdateUsecase from "../usecase/userOp/passwordUpdate.usecase";
+import SoftDeleteUsecase from "../usecase/userOp/softDelete.usecase";
 
 export default class UserBootstrap  {
     private SignupUsecase;
@@ -36,6 +37,7 @@ export default class UserBootstrap  {
 
     private UpdateUsecase;
     private PasswordUpdateUsecase;
+    private SoftDeleteUsecase;
 
     constructor() {
         const userRepository = new UserRepository()
@@ -53,6 +55,7 @@ export default class UserBootstrap  {
         this.LogoutUsecase = new LogoutUsecase(userRepository)
         this.UpdateUsecase = new UpdateUsecase(userRepository)
         this.PasswordUpdateUsecase = new PasswordUpdateUsecase(userRepository, bcryptAdapter)
+        this.SoftDeleteUsecase = new SoftDeleteUsecase(userRepository)
         this.GoogleAdapter = GoogleAdapter
     }
 
@@ -66,11 +69,11 @@ export default class UserBootstrap  {
         }
     }
 
-    public googleAuth = async(token: string, role: string): Promise<Signup.Response> => {
+    public googleAuth = async(token: string, role: string, refreshToken: string): Promise<Signup.Response> => {
         try {
             const ticket = await this.GoogleAdapter.verify(token)
         if(!ticket) throw new Exception("there was an error signing in.", 400)
-        const user = await this.SignupWithGoogleUsecase.execute((ticket.given_name as string), (ticket.family_name as string) , (ticket.email as string), ticket.sub, role)
+        const user = await this.SignupWithGoogleUsecase.execute((ticket.given_name as string), (ticket.family_name as string) , (ticket.email as string), ticket.sub, role, refreshToken)
         return user
         } catch (error:any) {
             throw new Exception(error.message, error.statusCode)
@@ -162,6 +165,14 @@ export default class UserBootstrap  {
             const message = await this.PasswordUpdateUsecase.execute(id, password, newPassword) 
 
             return message
+        } catch (error:any) {
+            throw new Exception(error.message, error.statusCode)
+        }
+    }
+
+    public deleteUser = async (id: string): Promise<void> => {
+        try {
+            await this.SoftDeleteUsecase.execute(id)
         } catch (error:any) {
             throw new Exception(error.message, error.statusCode)
         }

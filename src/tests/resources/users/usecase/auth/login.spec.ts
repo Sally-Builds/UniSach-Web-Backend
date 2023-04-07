@@ -95,11 +95,11 @@ describe("Login usecase", () => {
         expect(jwtGenSpy).toBeCalledTimes(2)
     })
 
-    it('should update the refresh token array', async () => {
+    it('should call findOneAndUpdate with new refresh token array and set active to true', async () => {
         const findOneAndUpdateSpy = jest.spyOn(UserRepositoryReturnsAValue, 'findOneAndUpdate')
         await loginUsecase.execute(email, (password as string), 'refreshToken')
 
-        expect(findOneAndUpdateSpy).toHaveBeenCalledWith(expect.objectContaining({_id: (dbUser()[0] as any).id}), {refreshToken: expect.arrayContaining(['ok'])})
+        expect(findOneAndUpdateSpy).toHaveBeenCalledWith(expect.objectContaining({_id: (dbUser()[0] as any).id}), {refreshToken: expect.arrayContaining(['ok']), active: true})
     })
 
     it('should remove unwanted fields', async () => {

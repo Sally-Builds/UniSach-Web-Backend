@@ -21,6 +21,7 @@ export default class UserAPI {
         this.router.get('/auth/logout', this.logout)
         this.router.get('/me', authenticate, this.getMe)
         this.router.patch('/me', authenticate, this.updateMe)
+        this.router.delete('/me', authenticate, this.deleteMe)
         this.router.patch('/updatepassword', authenticate, this.passwordUpdate)
     }
 
@@ -38,7 +39,8 @@ export default class UserAPI {
 
     private googleRegister  = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
-            const data = await this.userService.googleAuth(req.body.token as string, req.body.role)
+            const refreshToken = req.cookies.refreshToken || ''
+            const data = await this.userService.googleAuth(req.body.token as string, req.body.role, refreshToken)
             res.cookie('refreshToken', data.refreshToken, {httpOnly: true, maxAge: 24 * 60 * 60 * 1000})
 
             res.status(200).json({
@@ -193,6 +195,17 @@ export default class UserAPI {
             res.status(200).json({
                 data: result
             })
+        } catch (error:any) {
+            next(new Exception(error.message, error.statusCode))
+        }
+    }
+
+    private deleteMe = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const user = req.user as User
+            await this.userService.deleteUser((user.id as string))
+
+            res.status(204).json({})
         } catch (error:any) {
             next(new Exception(error.message, error.statusCode))
         }
