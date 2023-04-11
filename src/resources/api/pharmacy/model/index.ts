@@ -30,6 +30,9 @@ const pharmacySchema = new Schema<Pharmacy> ({
     license_number: String,
     pharmacistLicense: String,
     pharmacistQualification: String,
+    email: String,
+    description: String,
+    images: [String]
 })
 
 export default model('Pharmacy', pharmacySchema)

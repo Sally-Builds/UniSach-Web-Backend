@@ -12,6 +12,9 @@ export default interface Pharmacy extends Document {
     license_number?: string,
     address?: string,
     location?: Location,
+    email?: string,
+    description?: string,
+    images?: string[]
 }
 
 interface Location {
