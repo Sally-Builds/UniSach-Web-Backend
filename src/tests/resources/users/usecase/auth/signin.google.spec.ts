@@ -37,13 +37,13 @@ describe("Register/signup with google", () => {
 
     it('should throw an error not a valid role', async () => {
     const signupWithGoogle = new SignupWithGoogleUsecase(UserRepositoryFindUserByEmailReturnsAValue, JwtGen, emailAdapter)
-    await expect(async () => {await signupWithGoogle.execute((first_name as string), (last_name as string), email, (googleID as string), "Users")}).rejects.toThrow(Exception)
+    await expect(async () => {await signupWithGoogle.execute((first_name as string), (last_name as string), email, (googleID as string), "Users", 'refreshToken')}).rejects.toThrow(Exception)
 
     })
 
     it('should throw an error if googleID is empty', async () => {
     const signupWithGoogle = new SignupWithGoogleUsecase(UserRepositoryFindUserByEmailReturnsAValue, JwtGen, emailAdapter)
-    await expect(async () => {await signupWithGoogle.execute((first_name as string), (last_name as string), email, '', role)}).rejects.toThrow(Exception)
+    await expect(async () => {await signupWithGoogle.execute((first_name as string), (last_name as string), email, '', role, 'refreshToken')}).rejects.toThrow(Exception)
 
     })
 
@@ -51,7 +51,7 @@ describe("Register/signup with google", () => {
     it('should call getUserByEmail with the correct email', async () => {
         const getEmailSpy = jest.spyOn(UserRepositoryFindUserByEmailReturnsAValue, 'getUserByEmail')
         const signupWithGoogle = new SignupWithGoogleUsecase(UserRepositoryFindUserByEmailReturnsAValue, JwtGen, emailAdapter)
-        await signupWithGoogle.execute((first_name as string), (last_name as string), email, (googleID as string), role)
+        await signupWithGoogle.execute((first_name as string), (last_name as string), email, (googleID as string), role, 'refreshToken')
 
         expect(getEmailSpy).toHaveBeenCalledWith(email)
 
@@ -61,7 +61,7 @@ describe("Register/signup with google", () => {
         it('should call create User', async () => {
             const createUserSpy = jest.spyOn(UserRepositoryFindUserByEmailReturnsNull, 'createUser')
             const signupWithGoogle = new SignupWithGoogleUsecase(UserRepositoryFindUserByEmailReturnsNull, JwtGen, emailAdapter)
-            await signupWithGoogle.execute((first_name as string), (last_name as string), email, (googleID as string), role)
+            await signupWithGoogle.execute((first_name as string), (last_name as string), email, (googleID as string), role, 'refreshToken')
     
             expect(createUserSpy).toHaveBeenCalledWith(expect.objectContaining({
                     first_name,
@@ -78,7 +78,7 @@ describe("Register/signup with google", () => {
         it('should call generateTokens with the correct parameter',async () => {
             const signupWithGoogle = new SignupWithGoogleUsecase(UserRepositoryFindUserByEmailReturnsNull, JwtGen, emailAdapter)
             const generateTokensSpy = jest.spyOn(signupWithGoogle, 'generateTokens')
-            await signupWithGoogle.execute((first_name as string), (last_name as string), email, (googleID as string), role)
+            await signupWithGoogle.execute((first_name as string), (last_name as string), email, (googleID as string), role, 'refreshToken')
     
             expect(generateTokensSpy).toHaveBeenCalledWith('1')
         })
@@ -86,7 +86,7 @@ describe("Register/signup with google", () => {
         it('should generate the refresh and access tokens',async () => {
             const signupWithGoogle = new SignupWithGoogleUsecase(UserRepositoryFindUserByEmailReturnsNull, JwtGen, emailAdapter)
             const JwtGenSpy = jest.spyOn(JwtGen, 'sign')
-            await signupWithGoogle.execute((first_name as string), (last_name as string), email, (googleID as string), role)
+            await signupWithGoogle.execute((first_name as string), (last_name as string), email, (googleID as string), role, 'refreshToken')
     
             expect(JwtGenSpy).toBeCalledTimes(2)
         })
@@ -94,7 +94,7 @@ describe("Register/signup with google", () => {
         it('generateTokens should return correct object', async () => {
             const signupWithGoogle = new SignupWithGoogleUsecase(UserRepositoryFindUserByEmailReturnsNull, JwtGen, emailAdapter)
             const generateTokensSpy = jest.spyOn(signupWithGoogle, 'generateTokens')
-            await signupWithGoogle.execute((first_name as string), (last_name as string), email, (googleID as string), role)
+            await signupWithGoogle.execute((first_name as string), (last_name as string), email, (googleID as string), role, 'refreshToken')
     
             expect(await generateTokensSpy.mock.results[0].value).toEqual(expect.objectContaining({
                 accessToken: expect.anything(),
@@ -105,7 +105,7 @@ describe("Register/signup with google", () => {
         it('should update the refresh token in the db', async () => {
             const findOneAndUpdateSpy = jest.spyOn(UserRepositoryFindUserByEmailReturnsNull, 'findOneAndUpdate')
             const signupWithGoogle = new SignupWithGoogleUsecase(UserRepositoryFindUserByEmailReturnsNull, JwtGen, emailAdapter)
-            await signupWithGoogle.execute((first_name as string), (last_name as string), email, (googleID as string), role)
+            await signupWithGoogle.execute((first_name as string), (last_name as string), email, (googleID as string), role, 'refreshToken')
     
             expect(findOneAndUpdateSpy).toHaveBeenCalled()
     
@@ -114,7 +114,7 @@ describe("Register/signup with google", () => {
         it('should send welcome email', async () => {
             const sendWelcomeSpy = jest.spyOn(emailAdapter, 'sendWelcome')
             const signupWithGoogle = new SignupWithGoogleUsecase(UserRepositoryFindUserByEmailReturnsNull, JwtGen, emailAdapter)
-            await signupWithGoogle.execute((first_name as string), (last_name as string), email, (googleID as string), role)
+            await signupWithGoogle.execute((first_name as string), (last_name as string), email, (googleID as string), role, 'refreshToken')
     
             expect(sendWelcomeSpy).toHaveBeenCalledWith(expect.anything(), email, first_name)
     
@@ -123,7 +123,7 @@ describe("Register/signup with google", () => {
         it('should return the correct data', async () => {
             const signupWithGoogle = new SignupWithGoogleUsecase(UserRepositoryFindUserByEmailReturnsNull, JwtGen, emailAdapter)
             const executeSpy = jest.spyOn(signupWithGoogle, 'execute')
-            await signupWithGoogle.execute((first_name as string), (last_name as string), email, (googleID as string), role)
+            await signupWithGoogle.execute((first_name as string), (last_name as string), email, (googleID as string), role, 'refreshToken')
 
             expect(await executeSpy.mock.results[0].value).toEqual(expect.objectContaining({
                 accessToken: expect.anything(),
@@ -137,24 +137,23 @@ describe("Register/signup with google", () => {
         it('should call generateTokens with the correct parameter',async () => {
             const signupWithGoogle = new SignupWithGoogleUsecase(UserRepositoryFindUserByEmailReturnsAValue, JwtGen, emailAdapter)
             const generateTokensSpy = jest.spyOn(signupWithGoogle, 'generateTokens')
-            await signupWithGoogle.execute((first_name as string), (last_name as string), email, (googleID as string), role)
+            await signupWithGoogle.execute((first_name as string), (last_name as string), email, (googleID as string), role, 'refreshToken')
     
             expect(generateTokensSpy).toHaveBeenCalledWith('1')
         })
     
-        it('should update the refresh token in the db', async () => {
+        it('should call findOneAndUpdate with new refresh token array and set active to true', async () => {
             const findOneAndUpdateSpy = jest.spyOn(UserRepositoryFindUserByEmailReturnsAValue, 'findOneAndUpdate')
             const signupWithGoogle = new SignupWithGoogleUsecase(UserRepositoryFindUserByEmailReturnsAValue, JwtGen, emailAdapter)
-            await signupWithGoogle.execute((first_name as string), (last_name as string), email, (googleID as string), role)
-    
-            expect(findOneAndUpdateSpy).toHaveBeenCalled()
-    
+            await signupWithGoogle.execute((first_name as string), (last_name as string), email, (googleID as string), role, 'refreshToken')
+            
+            await expect(findOneAndUpdateSpy).toHaveBeenCalledWith({_id: expect.anything()}, {refreshToken: expect.arrayContaining(['ok']), active: true})
         })
 
         it('should return the correct data', async () => {
             const signupWithGoogle = new SignupWithGoogleUsecase(UserRepositoryFindUserByEmailReturnsAValue, JwtGen, emailAdapter)
             const executeSpy = jest.spyOn(signupWithGoogle, 'execute')
-            await signupWithGoogle.execute((first_name as string), (last_name as string), email, (googleID as string), role)
+            await signupWithGoogle.execute((first_name as string), (last_name as string), email, (googleID as string), role, 'refreshToken')
 
             expect(await executeSpy.mock.results[0].value).toEqual(expect.objectContaining({
                 accessToken: expect.anything(),

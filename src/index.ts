@@ -26,7 +26,8 @@ class App {
 
     //middlewares
     private initializeMiddleware () {
-        this.app.use(cors());
+        this.app.use(cors({origin: true, credentials: true}));
+        // this.app.use(cors());
         this.app.use(compression());
         this.app.use(morgan('dev'));
         this.app.use(helmet());

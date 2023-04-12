@@ -37,12 +37,12 @@ export default class LoginUsecase implements LoginInterface {
            const {accessToken, newRefreshToken} = await this.generateTokens((user as any).id)
            
            newRefreshTokenArray?.push(newRefreshToken)
-           await this.UserRepo.findOneAndUpdate({_id: (user as any).id}, {refreshToken: newRefreshTokenArray})
+           await this.UserRepo.findOneAndUpdate({_id: (user as any).id}, {refreshToken: newRefreshTokenArray, active: true})
             
             this.removeUnwantedFields(user)
 
             return {
-                user: {...JSON.parse(JSON.stringify(user)), refreshToken: undefined},
+                user: {...JSON.parse(JSON.stringify(user)), refreshToken: undefined, active: true},
                 accessToken,
                 refreshToken: newRefreshToken
             }

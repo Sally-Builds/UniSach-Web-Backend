@@ -9,7 +9,7 @@ export default class SignupWithGoogleUsecase implements SignupWithGoogleInterfac
 
     constructor(private readonly userRepository: UserRepositoryInterface, private readonly jwtGen: JwtGenerate, private readonly Email: EmailInterface) {}
 
-    public async execute(first_name: string, last_name: string, email: string, googleID: string, role: string): Promise<Signup.Response> {
+    public async execute(first_name: string, last_name: string, email: string, googleID: string, role: string, existingRefreshToken: string): Promise<Signup.Response> {
         try {
             if(!Object.values(Role).includes(role as Role)) throw new Exception('role not valid', 400)
 
@@ -41,10 +41,13 @@ export default class SignupWithGoogleUsecase implements SignupWithGoogleInterfac
             if(isExist.password) throw new Exception("Bad Request", 400)
             const {accessToken, refreshToken} = await this.generateTokens((isExist as any).id)
 
-            await this.userRepository.findOneAndUpdate({_id: (isExist as any).id}, {$push: { refreshToken: refreshToken}})
+            const newRefreshTokenArray = !existingRefreshToken ? isExist?.refreshToken  : isExist.refreshToken?.filter((rt: string) => rt != existingRefreshToken)
+            newRefreshTokenArray?.push(refreshToken)
+            await this.userRepository.findOneAndUpdate({_id: (isExist as any).id}, {refreshToken: newRefreshTokenArray, active: true})
 
-            isExist.refreshToken = undefined
-            return {user: isExist, accessToken, refreshToken}
+            return {
+                user: {...JSON.parse(JSON.stringify(isExist)), refreshToken: undefined, active: true},
+                accessToken, refreshToken}
        } catch (error:any) {
         throw new Exception(error.message, error.statusCode)
        }

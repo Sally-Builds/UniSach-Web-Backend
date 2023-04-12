@@ -347,10 +347,12 @@ Unisach backend development code
         ```
 
 * ### User
-    This are the following routes used for user CRUD
+    This are the following routes used for user CRUD<br>
+    **NB: Authenticated routes**
     * [Get me](#getme)
     * [Update me](#update-user)
     * [Update Password](#update-password)
+    * [Delete User](#deactivate-or-delete-account)
 
     #
 
@@ -466,5 +468,25 @@ Unisach backend development code
         }
     ```
 
+    ### Deactivate or Delete Account
+    * Route
+    ```javascript
+        DELETE - "/api/users/me"
+    ```
+    * Request
+    * Response
+    ```js
+        status: 204
+    ```
+    #
+    ```javascript
+        status: 401
+    ```
+    ```json
+        {
+            "statusCode": 401,
+            "message": "Unauthorized access"
+        }
+    ```
 
     

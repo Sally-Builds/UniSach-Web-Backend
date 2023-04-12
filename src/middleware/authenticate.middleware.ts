@@ -23,6 +23,10 @@ async function authenticate (req:Request, res:Response, next:NextFunction): Prom
         const user = await userRepo.findOne({_id: decoded.id})
 
         if(!user) return next(new Exception('Unauthorized access', 401))
+        if(user?.refreshToken?.length == 0) {
+            res.clearCookie('refreshToken', {httpOnly: true, })
+            return next(new Exception('Forbidden', 403))
+        }
 
         user.password = undefined
         user.confirmationCodeExpiresIn = undefined
