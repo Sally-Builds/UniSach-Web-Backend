@@ -26,6 +26,7 @@ class App {
 
     //middlewares
     private initializeMiddleware () {
+      this.app.use(cookieParser())
         this.app.use(cors({origin: true, credentials: true}));
         // this.app.use(cors());
         this.app.use(compression());
@@ -33,7 +34,6 @@ class App {
         this.app.use(helmet());
         this.app.use(express.json());
         this.app.use(express.urlencoded({extended: true}));
-        this.app.use(cookieParser())
     }
 
     //routes

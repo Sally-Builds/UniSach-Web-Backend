@@ -41,7 +41,7 @@ export default class UserAPI {
         try {
             const refreshToken = req.cookies.refreshToken || ''
             const data = await this.userService.googleAuth(req.body.token as string, req.body.role, refreshToken)
-            res.cookie('refreshToken', data.refreshToken, {httpOnly: true, maxAge: 24 * 60 * 60 * 1000, secure: this.boolConversion()})
+            res.cookie('refreshToken', data.refreshToken, {httpOnly: true, maxAge: 24 * 60 * 60 * 1000, secure: this.boolConversion(), sameSite: "none"})
 
             res.status(200).json({
                 data: {
@@ -60,7 +60,7 @@ export default class UserAPI {
             const data = await this.userService.login(req.body.email, req.body.password, refreshToken)
 
             if((data as Verified).accessToken) {
-                res.cookie('refreshToken', (data as Verified).refreshToken, {httpOnly: true, maxAge: 24 * 60 * 60 * 1000, secure: this.boolConversion()})
+                res.cookie('refreshToken', (data as Verified).refreshToken, {httpOnly: true, maxAge: 24 * 60 * 60 * 1000, secure: this.boolConversion(), sameSite: "none"})
                 return res.status(200).json({
                     data: {
                         accessToken: (data as Verified).accessToken,
@@ -82,7 +82,7 @@ export default class UserAPI {
             const refreshToken = req.cookies?.refreshToken || ''
             const data = await this.userService.verifyOTP(req.body.email, req.body.otp, refreshToken)
 
-            res.cookie('refreshToken', data.refreshToken, {httpOnly: true, maxAge: 24 * 60 * 60 * 1000, secure: this.boolConversion()})
+            res.cookie('refreshToken', data.refreshToken, {httpOnly: true, maxAge: 24 * 60 * 60 * 1000, secure: this.boolConversion(), sameSite: "none"})
 
             res.status(200).json({
                 data: {
@@ -139,7 +139,7 @@ export default class UserAPI {
             res.clearCookie('refreshToken', {httpOnly: true, secure: Boolean(process.env.COOKIE_SECURE)})
 
             const message = await this.userService.refreshToken(token)
-            res.cookie('refreshToken', message.refreshToken, {httpOnly: true, maxAge: 24 * 60 * 60 * 1000, secure: this.boolConversion()})
+            res.cookie('refreshToken', message.refreshToken, {httpOnly: true, maxAge: 24 * 60 * 60 * 1000, secure: this.boolConversion(), sameSite: "none"})
 
             res.status(200).json({
                 accessToken: message.accessToken
@@ -156,7 +156,7 @@ export default class UserAPI {
             const token = cookies.refreshToken
 
             const message = await this.userService.logout(token)
-            res.clearCookie('refreshToken', {httpOnly: true, secure: this.boolConversion()})
+            res.clearCookie('refreshToken', {httpOnly: true, secure: this.boolConversion(), sameSite: "none"})
 
             res.sendStatus(204)
         } catch (error:any) {
