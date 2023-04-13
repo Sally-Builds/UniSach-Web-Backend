@@ -1,4 +1,4 @@
-import { cleanEnv, port, str, num } from 'envalid'
+import { cleanEnv, port, str, num, bool } from 'envalid'
 
 
 function validateEnv (): void {
@@ -16,7 +16,8 @@ function validateEnv (): void {
         CLIENT_ID: str(),
         CLIENT_SECRET: str(),
         ACCESS_TOKEN_SECRET: str(),
-        REFRESH_TOKEN_SECRET: str()
+        REFRESH_TOKEN_SECRET: str(),
+        COOKIE_SECURE: bool()
     })
 }
 
