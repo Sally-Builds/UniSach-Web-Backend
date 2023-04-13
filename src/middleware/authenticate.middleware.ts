@@ -10,7 +10,7 @@ async function authenticate (req:Request, res:Response, next:NextFunction): Prom
     if(!bearer || !bearer.startsWith('Bearer')){
         return next(new Exception('Unauthorized access', 401))
     }
-    const accessToken = bearer.split('Bearer ')[1].trim()
+    const accessToken = bearer.split('Bearer ')[1]
     try {
 
         const jwtAdapter = new JwtAdapter()
