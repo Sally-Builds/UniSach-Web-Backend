@@ -5,10 +5,11 @@ import compression from 'compression';
 import cookieParser from 'cookie-parser'
 import morgan from 'morgan';
 import helmet from 'helmet';
-import UserAPI from './resources/api/users';
 import errorMiddleware from './middleware/error.middleware';
 import Exception from './utils/exception/Exception';
 
+import UserAPI from './resources/api/users';
+import PharmacyAPI from './resources/api/pharmacy';
 
 
 class App {
@@ -39,6 +40,7 @@ class App {
     //routes
     private initializeRoutes () {
         this.app.use('/api/users', new UserAPI(this.app).router)
+        this.app.use('/api/pharmacies', new PharmacyAPI(this.app).router)
 
 
         this.app.all('*', (req:Request, res:Response, next: NextFunction) => {
