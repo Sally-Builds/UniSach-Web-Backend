@@ -1,7 +1,6 @@
 import { cleanData, connect, disconnect } from "../../../../utils/__helpers_/mongodb.memory.test.helpers";
 import UserRepository from "../../../../resources/api/users/repository";
 import User from "../../../../resources/api/users/interfaces/user.interface";
-import Exception from '../../../../utils/exception/Exception'
 
 
 const userRepository = new UserRepository() 
