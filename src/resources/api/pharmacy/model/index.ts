@@ -9,7 +9,7 @@ const pharmacySchema = new Schema<Pharmacy> ({
     },
     type: String,
     userId: {
-        type: Schema.Types.ObjectId,
+        type: String,
         ref: 'User',
         required: [true, 'This pharmacy must belong to a user']
     },
@@ -32,7 +32,11 @@ const pharmacySchema = new Schema<Pharmacy> ({
     pharmacistQualification: String,
     email: String,
     description: String,
-    images: [String]
+    images: [String],
+    verified: {
+        type: Boolean,
+        default: false
+    }
 })
 
-export default model('Pharmacy', pharmacySchema)
+export default model('PharmacyModel', pharmacySchema)
