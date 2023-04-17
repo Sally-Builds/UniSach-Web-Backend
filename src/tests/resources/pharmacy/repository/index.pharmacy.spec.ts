@@ -1,32 +1,11 @@
 import { cleanData, connect, disconnect } from "../../../../utils/__helpers_/mongodb.memory.test.helpers";
 import PharmacyRepo from '../../../../resources/api/pharmacy/repository/index'
-import Pharmacy from "../../../../resources/api/pharmacy/interfaces/pharmacy.interface";
-import { pharmacy } from "../../../../resources/api/pharmacy/interfaces/pharmacyRepo.interface";
+import { Pharmacy } from "../../__helpers__/stubs";
 
 
 const pharmacyRepository = new PharmacyRepo() 
-const pharmacy = ():Pharmacy => {
-    return {
-        pharmacistLicense: 'string',
-        pharmacistQualification: 'string',
-        name: 'string',
-        type: 'string',
-        userId: '1',
-        phone_number: 'string',
-        motto: 'string',
-        license_number: 'string',
-        address: 'string',
-        location: {
-            type: "Point",
-            coordinates: [34.94839, 45.9448839]
-        },
-        email: 'string',
-        description: 'string',
-        images: ['test'],
-        created_at: new Date(),
-        updated_at: new Date(),
-        verified: true
-    }
+const pharmacy = () => {
+    return Pharmacy()
 }
 
 describe('Pharmacy Repository', () => {

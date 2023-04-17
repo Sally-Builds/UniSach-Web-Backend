@@ -1,9 +1,9 @@
-import UserRepositoryInterface from "../../../resources/api/users/interfaces/userRepo.interface"
 import { JwtGenerate } from "../../../utils/cryptography/interface/cryptography/jsonwebtoken/generate"
 import {JwtVerify} from '../../../utils/cryptography/interface/cryptography/jsonwebtoken/verify'
 import PasswordEncryption from "../../../utils/cryptography/interface/cryptography/passwordEncryption"
 import User from "../../../resources/api/users/interfaces/user.interface"
-import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken"
+import { TokenExpiredError } from "jsonwebtoken"
+import Pharmacy from "../../../resources/api/pharmacy/interfaces/pharmacy.interface"
 
 export const user = ():User => {
     return {
@@ -15,6 +15,30 @@ export const user = ():User => {
             googleID: '1234567890',
             phone: "+123456789",
             role: 'User'
+    }
+}
+
+export const Pharmacy = (): Pharmacy => {
+    return {
+        pharmacistLicense: 'string',
+        pharmacistQualification: 'string',
+        name: 'string',
+        type: 'string',
+        userId: '1',
+        phone_number: 'string',
+        motto: 'string',
+        license_number: 'string',
+        address: 'string',
+        location: {
+            type: "Point",
+            coordinates: [34.94839, 45.9448839]
+        },
+        email: 'string',
+        description: 'string',
+        images: ['test'],
+        created_at: new Date(),
+        updated_at: new Date(),
+        verified: true
     }
 }
 
