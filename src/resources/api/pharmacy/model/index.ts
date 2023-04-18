@@ -35,6 +35,11 @@ const pharmacySchema = new Schema<Pharmacy> ({
         type: Boolean,
         default: false
     }
+}, {
+    timestamps: {
+        createdAt: 'created_at',
+        updatedAt: 'updated_at'
+    },
 })
 
 export default model('PharmacyModel', pharmacySchema)

@@ -18,6 +18,7 @@ export const user = ():User => {
     }
 }
 
+const timestamp = new Date()
 export const Pharmacy = (): Pharmacy => {
     return {
         pharmacistLicense: 'string',
@@ -36,8 +37,8 @@ export const Pharmacy = (): Pharmacy => {
         email: 'string',
         description: 'string',
         images: ['test'],
-        created_at: new Date(),
-        updated_at: new Date(),
+        created_at: timestamp,
+        updated_at: timestamp,
         verified: true
     }
 }

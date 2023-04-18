@@ -20,7 +20,7 @@ export namespace findOne {
 }
 
 export namespace find {
-    export type Response = Pharmacy[] | null;
+    export type Response = Pharmacy[] | [];
 }
 
 export namespace findOneAndUpdate {

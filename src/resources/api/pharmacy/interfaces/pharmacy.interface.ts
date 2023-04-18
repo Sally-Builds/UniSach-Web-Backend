@@ -2,9 +2,9 @@ export default interface Pharmacy {
     id?: string,
     pharmacistLicense?: string,
     pharmacistQualification?: string,
-    name: string,
+    name?: string,
     type?: string,
-    userId: string,
+    userId?: string,
     phone_number?: string,
     motto?: string,
     license_number?: string,
@@ -15,7 +15,7 @@ export default interface Pharmacy {
     images?: string[],
     created_at?: Date,
     updated_at?: Date
-    verified: boolean
+    verified?: boolean
 }
 
 interface Location {
