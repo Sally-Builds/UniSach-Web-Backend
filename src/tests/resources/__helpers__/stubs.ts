@@ -4,6 +4,7 @@ import PasswordEncryption from "../../../utils/cryptography/interface/cryptograp
 import User from "../../../resources/api/users/interfaces/user.interface"
 import { TokenExpiredError } from "jsonwebtoken"
 import Pharmacy from "../../../resources/api/pharmacy/interfaces/pharmacy.interface"
+import Drug from "../../../resources/api/drugs/interfaces/drug.interface"
 
 export const user = ():User => {
     return {
@@ -40,6 +41,16 @@ export const Pharmacy = (): Pharmacy => {
         created_at: timestamp,
         updated_at: timestamp,
         verified: true
+    }
+}
+
+export const Drug = (): Drug => {
+    return {
+        name: 'abu',
+        pharmacyId: 'sth',
+        amount: 98,
+        price: 800,
+        description: 'blah blah blah'
     }
 }
 
