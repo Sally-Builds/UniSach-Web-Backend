@@ -11,6 +11,7 @@ Unisach backend development code
 # Documentation
 * [Authentication](#authentication)
 * [user](#user)
+* [Pharmacy](#pharmacy)
 #
 
 *   ### Authentication
