@@ -1,6 +1,7 @@
 import UpdateInterface, {Update} from "../interfaces/usecases/update.interface";
 import PharmacyRepositoryInterface from "../interfaces/pharmacyRepo.interface";
 import Exception from "@/utils/exception/Exception";
+import slugify from "slugify";
 
 
 export default class UpdatePharmacyUsecase implements UpdateInterface {
@@ -11,6 +12,10 @@ export default class UpdatePharmacyUsecase implements UpdateInterface {
             const user = await this.PharmRepo.findOne({userId})
             
             if(query._id != user?.id) throw new Exception('Forbidden', 403)
+
+            if(data.name) {
+                data.slug = slugify(data.name)
+            }
             const pharmacy = await this.PharmRepo.findOneAndUpdate(query, data)
 
             if(!pharmacy) throw new Exception('not found', 404)
