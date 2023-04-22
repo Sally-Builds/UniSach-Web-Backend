@@ -1,12 +1,11 @@
-import { Document, ObjectId } from "mongoose"
-
-export default interface Pharmacy extends Document {
+export default interface Pharmacy {
     id?: string,
     pharmacistLicense?: string,
     pharmacistQualification?: string,
     name: string,
+    slug?: string,
     type?: string,
-    userId: ObjectId,
+    userId?: string,
     phone_number?: string,
     motto?: string,
     license_number?: string,
@@ -14,7 +13,10 @@ export default interface Pharmacy extends Document {
     location?: Location,
     email?: string,
     description?: string,
-    images?: string[]
+    images?: string[],
+    created_at?: Date,
+    updated_at?: Date
+    verified?: boolean
 }
 
 interface Location {

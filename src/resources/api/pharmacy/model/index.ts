@@ -1,4 +1,5 @@
 import {Schema, model} from 'mongoose'
+import slugify from 'slugify'
 import Pharmacy from '../interfaces/pharmacy.interface'
 
 
@@ -8,8 +9,9 @@ const pharmacySchema = new Schema<Pharmacy> ({
         required: [true, 'please provide the pharmacy name']
     },
     type: String,
+    slug: String,
     userId: {
-        type: Schema.Types.ObjectId,
+        type: String,
         ref: 'User',
         required: [true, 'This pharmacy must belong to a user']
     },
@@ -20,11 +22,9 @@ const pharmacySchema = new Schema<Pharmacy> ({
         type: {
                 type: String,
                 enum: "Point",
-                required: true,
             },
         coordinates: {
                 type: [Number],
-                required: true,
             }
     },
     license_number: String,
@@ -32,7 +32,21 @@ const pharmacySchema = new Schema<Pharmacy> ({
     pharmacistQualification: String,
     email: String,
     description: String,
-    images: [String]
+    images: [String],
+    verified: {
+        type: Boolean,
+        default: false
+    }
+}, {
+    timestamps: {
+        createdAt: 'created_at',
+        updatedAt: 'updated_at'
+    },
 })
 
-export default model('Pharmacy', pharmacySchema)
+pharmacySchema.pre('save', function(next) {
+    this.slug = slugify(this.name, { lower: true });
+    next();
+  });
+
+export default model('PharmacyModel', pharmacySchema)
