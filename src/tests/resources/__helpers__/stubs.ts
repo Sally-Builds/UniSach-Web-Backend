@@ -47,7 +47,7 @@ export const Pharmacy = (): Pharmacy => {
 export const Drug = (): Drug => {
     return {
         name: 'abu',
-        pharmacyId: 'sth',
+        pharmacy: 'sth',
         amount: 98,
         price: 800,
         description: 'blah blah blah'

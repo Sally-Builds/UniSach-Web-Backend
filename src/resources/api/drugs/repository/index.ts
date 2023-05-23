@@ -26,7 +26,7 @@ export default class DrugRepository implements DrugRepositoryInterface {
 
     public async findOne(query: any): Promise<findOneN.Response> {
         try {
-            const drugs = await DrugModel.findOne(query)
+            const drugs = await DrugModel.findOne(query).populate('pharmacy')
 
             return drugs
         } catch (error:any) {
@@ -44,7 +44,7 @@ export default class DrugRepository implements DrugRepositoryInterface {
         }
     }
 
-    public async deleteDoc(...ids: string[]): Promise<deleteDoc.Response> {
+    public async deleteDoc(...ids: deleteDoc.Request[]): Promise<deleteDoc.Response> {
         try {
             const del = this.deleteFormatting(ids)
             const deletes = await DrugModel.bulkWrite((this.deleteFormatting(ids) as any))
@@ -55,12 +55,12 @@ export default class DrugRepository implements DrugRepositoryInterface {
         }
     }
 
-    private deleteFormatting (ids: string[]): DeleteInterfaceDrug[] {
+    private deleteFormatting (ids: deleteDoc.Request[]): DeleteInterfaceDrug[] {
         let deleteOneArray:DeleteInterfaceDrug[] = []
         ids.forEach((doc) => {
         let deletes = {
                 deleteOne: {
-                    filter: {_id: doc},
+                    filter: {_id: doc.id, pharmacy: doc.pharmacy},
                 }
             }
             deleteOneArray.push(deletes)
@@ -75,9 +75,10 @@ export default class DrugRepository implements DrugRepositoryInterface {
         let updates = {
                 updateOne: {
                     filter: {_id: (doc.id as string)},
-                    update: {...doc, _id: undefined}
+                    update: {...doc}
                 }
             }
+            console.log(updates)
             updateOneArray.push(updates)
         })
         return updateOneArray

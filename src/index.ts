@@ -10,6 +10,7 @@ import Exception from './utils/exception/Exception';
 
 import UserAPI from './resources/api/users';
 import PharmacyAPI from './resources/api/pharmacy';
+import DrugAPI from './resources/api/drugs'
 
 
 class App {
@@ -41,6 +42,7 @@ class App {
     private initializeRoutes () {
         this.app.use('/api/users', new UserAPI(this.app).router)
         this.app.use('/api/pharmacies', new PharmacyAPI(this.app).router)
+        this.app.use('/api/drugs', new DrugAPI(this.app).router)
 
 
         this.app.all('*', (req:Request, res:Response, next: NextFunction) => {

@@ -1,5 +1,4 @@
 import Joi from 'joi'
-import Pharmacy from './interfaces/pharmacy.interface'
 
 const create = Joi.object({
     pharmacistLicense: Joi.string(),

@@ -7,7 +7,7 @@ export default interface Drug {
     images?: string[],
     amount?: number,
     price?: number,
-    pharmacyId?: string,
+    pharmacy?: string,
     created_at?: Date,
     updated_at?: Date,
 }

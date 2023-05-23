@@ -12,9 +12,9 @@ const drugSchema = new Schema<Drug>({
     amount: Number,
     description: String,
     category: String,
-    pharmacyId: {
+    pharmacy: {
         type: String,
-        ref: "Pharmacy",
+        ref: "PharmacyModel",
         required: [true, "This Drug must belong to a Pharmacy"]
     },
     images: String,

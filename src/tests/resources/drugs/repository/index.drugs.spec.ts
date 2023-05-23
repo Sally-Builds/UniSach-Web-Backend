@@ -43,7 +43,7 @@ describe('Drug Repository model', () => {
         const create = await DrugRepository.create(...[{...Drug(), name: '1', description: 'hey'}, {...Drug(), name: '2', description: 'hey'}])
         const find = await DrugRepository.find({})
 
-        const data = {id: find[0].id, name: 'updatedDrug'}
+        const data = {id: find[0].id, name: 'updatedDrug', pharmacy: find[0].pharmacy}
         await DrugRepository.updateDoc(...[data])
 
         const findOne = await DrugRepository.findOne({_id: (find[0] as any)._id})
@@ -54,9 +54,9 @@ describe('Drug Repository model', () => {
     it('should delete drugs', async () => {
         const create = await DrugRepository.create(...[{...Drug(), name: '1', description: 'hey'}, {...Drug(), name: '2', description: 'hey'}])
         let find = await DrugRepository.find({})
-        const data = (find[0].id as string)
+        const data = find[0]
         
-        await DrugRepository.deleteDoc(...[data])
+        await DrugRepository.deleteDoc(...[{id: (data.id as string), pharmacy: (data.pharmacy as string)}])
         const findOne = await DrugRepository.findOne({_id: data})
 
         expect(findOne).toEqual(null)

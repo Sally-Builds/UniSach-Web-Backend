@@ -6,7 +6,7 @@ export default interface DrugRepositoryInterface {
     find(query: any): Promise<find.Response>
     findOne(query: any): Promise<findOneN.Response>
     updateDoc(...data: updateDoc.Request[]): Promise<updateDoc.Response>
-    deleteDoc(...ids: string[]): Promise<deleteDoc.Response>
+    deleteDoc(...ids: deleteDoc.Request[]): Promise<deleteDoc.Response>
 }
 
 interface Res {
@@ -31,16 +31,17 @@ export namespace find {
 }
 
 export namespace updateDoc {
-    export type Request = Omit<Drug, 'slug'>;
+    export type Request = Drug;
     export type Response = Res;
 }
 
 export namespace deleteDoc {
-    export type Response = ResizeObserver;
+    export type Request = {id: string, pharmacy: string}
+    export type Response = Res;
 }
 
 export interface DeleteInterfaceDrug {
-    deleteOne: {filter: {_id: string}}
+    deleteOne: {filter: {_id: string, pharmacy: string}}
 }
 
 export interface UpdateInterfaceDrug {
